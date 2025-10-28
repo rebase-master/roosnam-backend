@@ -1,0 +1,121 @@
+---
+alwaysApply: true
+---
+
+
+## Detailed Scaffolding
+
+### roosnam-backend (Rails 8.1)
+
+#### 1. Creation Commands
+- `rails new roosnam-backend --skip-javascript`
+- Install gems:
+`Gemfile`
+```ruby
+# Gemfile
+gem 'turbo-rails'
+gem 'stimulus-rails'
+gem 'devise'
+gem 'rails_admin'
+gem 'rack-cors'
+```
+
+- Run: 
+```bash
+    bundle install
+    rails turbo:install
+    rails stimulus:install
+    rails generate devise:install
+    rails generate rails_admin:install
+```
+
+#### 2. Models Example
+- Refer to *database.mdc file.
+
+#### 3. API Controller Example (app/controllers/api/v1/skills_controller.rb)
+```ruby
+module Api
+  module V1
+    class SkillsController < ApplicationController
+      ...
+    end
+  end
+end
+```
+
+#### 4. Routes
+```ruby
+Routes: namespace :api do 
+    namespace :v1 do 
+        ...
+    end 
+end
+```
+
+#### 5. CORS (config/initializers/cors.rb)
+```ruby
+Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  allow do
+    origins '*'  # Tighten in prod
+    resource '/api/*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options]
+  end
+end
+```
+
+#### 6. Admin Auth
+- Use Devise with admin flag. RailsAdmin config:
+```ruby
+RailsAdmin.config do |config|
+  config.authenticate_with do
+    warden.authenticate! scope: :user
+  end
+  config.current_user_method(&:current_user)
+end
+```
+
+#### 8. Dockerfile
+
+```
+FROM ruby:3.4
+WORKDIR /app
+
+# Install Node.js (for Rails asset pipeline) and SQLite
+RUN apt-get update -qq && apt-get install -y nodejs sqlite3 libsqlite3-dev
+
+COPY Gemfile* ./
+RUN bundle install
+
+COPY . .
+
+# Entrypoint for DB setup and WAL mode
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
+
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+```
+
+```
+#### entrypoint.sh
+
+#!/bin/bash
+set -e
+
+# Enable WAL mode for SQLite (better concurrency)
+if [ -f db/development.sqlite3 ]; then
+  sqlite3 db/development.sqlite3 "PRAGMA journal_mode=WAL;"
+fi
+
+exec "$@"
+```
+
+#### 9. .env example
+
+```
+#### 9. .env example
+
+RAILS_ENV=development
+DATABASE_URL=sqlite3:db/development.sqlite3
+SECRET_KEY_BASE=your_secret
+GITHUB_TOKEN=xxxx
+```
