@@ -91,6 +91,8 @@ GEM
     bindex (0.8.1)
     bootsnap (1.18.6)
       msgpack (~> 1.2)
+    bootstrap (5.3.5)
+      popper_js (>= 2.11.8, < 3)
     brakeman (7.1.0)
       racc
     builder (3.3.0)
@@ -126,7 +128,7 @@ GEM
     dotenv (3.1.8)
     drb (2.2.3)
     ed25519 (1.4.0)
-    erb (5.1.1)
+    erb (5.1.3)
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
@@ -232,14 +234,11 @@ GEM
     parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
+    popper_js (2.11.8)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
     prism (1.6.0)
-    propshaft (1.3.1)
-      actionpack (>= 7.0.0)
-      activesupport (>= 7.0.0)
-      rack
     psych (5.2.6)
       date
       stringio
@@ -459,6 +458,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  bootstrap (~> 5.3)
   brakeman
   bundler-audit
   capybara
@@ -466,10 +466,9 @@ DEPENDENCIES
   devise
   jbuilder
   kamal
-  propshaft
   puma (>= 5.0)
   rack-cors
-  rails (~> 8.1.0.beta1)
+  rails (~> 8.1.0)
   rails_admin
   rubocop-rails-omakase
   sassc-rails
@@ -479,6 +478,7 @@ DEPENDENCIES
   solid_cable
   solid_cache
   solid_queue
+  sprockets-rails
   sqlite3 (>= 2.1)
   stimulus-rails
   thruster
