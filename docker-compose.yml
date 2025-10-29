@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    image: roosnam-backend:dev
+    ports:
+      - "3000:80"  # Host:Container (Dockerfile runs server on 80 via Thruster)
+    environment:
+      RAILS_ENV: development
+      RAILS_LOG_TO_STDOUT: "1"
+      BUNDLE_WITHOUT: ""  # Install all gems including development
+    volumes:
+      - .:/rails
+      # Note: bundle volume removed - all gems are installed in the Docker image
+      # If you need persistent gems between builds, uncomment the line below:
+      # - bundle:/usr/local/bundle
+      - storage:/rails/storage  # persists SQLite DB files
+    entrypoint: ["/rails/entrypoint.sh"]
+    command: ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "80"]
+
+volumes:
+  # bundle:  # Commented out - gems are installed in Docker image
+  storage:
+
+
