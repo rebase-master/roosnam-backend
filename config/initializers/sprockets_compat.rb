@@ -1,4 +1,3 @@
-# config/initializers/sprockets_compat.rb
 # Compatibility shim for old gems calling deprecated Sprockets APIs.
 
 if defined?(Sprockets::Environment)
