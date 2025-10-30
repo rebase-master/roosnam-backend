@@ -9,7 +9,7 @@
 
 # Ignore all environment files.
 /.env*
-
+/.cursor
 
 *.rbc
 capybara-*.html

@@ -54,13 +54,10 @@ The API will be available at `http://localhost:3000`
 http://localhost:3000/api/v1
 ```
 
-### Resources
+### Public (used by frontend)
 
-- **Companies**: `/api/v1/companies`
-- **Company Experiences**: `/api/v1/company_experiences`
+- **Works**: `/api/v1/works`
 - **Skills**: `/api/v1/skills`
-- **Client Projects**: `/api/v1/client_projects`
-- **Client Reviews**: `/api/v1/client_reviews`
 
 ### Example Request
 
@@ -81,10 +78,7 @@ Login with your admin user credentials to manage portfolio content through the R
 
 ### Database
 
-This project uses SQLite for simplicity. Database files are located in the `db/` directory:
-- `db/development.sqlite3` - Development database
-- `db/test.sqlite3` - Test database
-- `db/production.sqlite3` - Production database (created when deployed)
+This project uses SQLite for simplicity. Database files are stored under `storage/` in development/test.
 
 **Note**: SQLite database files are gitignored. Make sure to commit and push migration files, not the database files themselves.
 

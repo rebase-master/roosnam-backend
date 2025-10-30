@@ -5,11 +5,8 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     namespace :v1 do
-      resources :companies, except: [:new, :edit]
-      resources :company_experiences, except: [:new, :edit]
-      resources :skills, except: [:new, :edit]
-      resources :client_projects, except: [:new, :edit]
-      resources :client_reviews, except: [:new, :edit]
+      resources :skills, only: [:index]
+      resources :works, only: [:index]
     end
   end
 

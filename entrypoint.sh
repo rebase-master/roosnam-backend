@@ -8,7 +8,7 @@ chmod 777 storage 2>/dev/null || true
 # Check if we're in development mode
 if [ "$RAILS_ENV" = "development" ]; then
   echo "Running in development mode - preparing database..."
-  
+
   # Create database if it doesn't exist
   ./bin/rails db:create || true
   
