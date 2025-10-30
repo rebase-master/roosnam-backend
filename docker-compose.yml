@@ -10,6 +10,7 @@ services:
       RAILS_ENV: development
       RAILS_LOG_TO_STDOUT: "1"
       BUNDLE_WITHOUT: ""  # Install all gems including development
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
     volumes:
       - .:/rails
       # Note: bundle volume removed - all gems are installed in the Docker image
