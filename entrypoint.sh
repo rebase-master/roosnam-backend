@@ -14,7 +14,10 @@ if [ "$RAILS_ENV" = "development" ]; then
   
   # Run migrations
   ./bin/rails db:migrate
-  
+
+  # Run seed
+  ./bin/rails db:seed
+
   # Enable SQLite WAL mode for better concurrency
   if [ -f storage/development.sqlite3 ]; then
     echo "PRAGMA journal_mode=WAL;" | sqlite3 storage/development.sqlite3 || true
