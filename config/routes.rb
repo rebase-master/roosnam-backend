@@ -5,8 +5,13 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     namespace :v1 do
-      resources :skills, only: [:index]
       resources :works, only: [:index]
+      resources :client_projects, only: [:index]
+      resources :client_reviews, only: [:index]
+      resources :company_experiences, only: [:index]
+      resources :experience_skills, only: [:index]
+      resources :certifications, only: [:index]
+      resources :education, only: [:index]
     end
   end
 

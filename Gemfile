@@ -36,6 +36,9 @@ gem "rails_admin"
 # CORS handling for API
 gem "rack-cors"
 
+# JSON serialization
+gem "active_model_serializers", "~> 0.10.14"
+
 # Background jobs
 gem "sidekiq"
 gem "sidekiq-cron"
