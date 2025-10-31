@@ -2,11 +2,14 @@
 
 Rails 8.1 API backend for the Roosnam portfolio platform with SQLite database.
 
+**Single-User Mode**: This application is designed for one person's portfolio. It supports a single admin user who owns all portfolio content.
+
 ## Features
 
 - RESTful JSON API for portfolio data
 - RailsAdmin interface for content management
 - Devise authentication for admin access
+- Single-user (singleton) mode with automatic admin enforcement
 - CORS enabled for Next.js frontend
 - SQLite database (file-based, no external DB required)
 - Background job support (Sidekiq) for future AI integrations
@@ -27,18 +30,23 @@ Rails 8.1 API backend for the Roosnam portfolio platform with SQLite database.
    bundle install
    ```
 
-3. Set up the database:
+3. Set up environment variables:
+   Create a `.env` file or export the following:
    ```bash
-   rails db:create db:migrate
+   export ADMIN_EMAIL="your-email@example.com"
+   export ADMIN_PASSWORD="your-secure-password"
    ```
 
-4. Create an admin user:
+4. Set up the database and seed the admin user:
    ```bash
-   rails console
+   rails db:create db:migrate db:seed
    ```
-   ```ruby
-   User.create!(email: 'admin@example.com', password: 'password', admin: true)
-   ```
+   
+   The seed command creates the single admin user using your `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables. This user:
+   - Is automatically assigned the `admin` role
+   - Owns all portfolio content
+   - Cannot be deleted or demoted through the admin interface
+   - Is the only user allowed in the system (singleton pattern)
 
 5. Start the server:
    ```bash
@@ -56,13 +64,20 @@ http://localhost:3000/api/v1
 
 ### Public (used by frontend)
 
+All endpoints return data scoped to the single portfolio user:
+
 - **Works**: `/api/v1/works`
-- **Skills**: `/api/v1/skills`
+- **Company Experiences**: `/api/v1/company_experiences`
+- **Client Projects**: `/api/v1/client_projects`
+- **Client Reviews**: `/api/v1/client_reviews`
+- **Experience Skills**: `/api/v1/experience_skills`
+- **Certifications**: `/api/v1/certifications`
+- **Education**: `/api/v1/education`
 
 ### Example Request
 
 ```bash
-curl http://localhost:3000/api/v1/companies
+curl http://localhost:3000/api/v1/company_experiences
 ```
 
 ## Admin Interface
@@ -72,7 +87,12 @@ Access the admin dashboard at:
 http://localhost:3000/admin
 ```
 
-Login with your admin user credentials to manage portfolio content through the RailsAdmin interface.
+Login with your admin user credentials (from `ADMIN_EMAIL` and `ADMIN_PASSWORD`) to manage portfolio content through the RailsAdmin interface.
+
+**Single-User Restrictions**:
+- You can only edit the existing admin user (email/password changes)
+- The admin checkbox is hidden (always enforced as `true`)
+- Creating new users or deleting the admin user is prevented
 
 ## Development
 
@@ -99,19 +119,29 @@ rails test
 ## Architecture
 
 - **Models**: ActiveRecord models with associations and validations
-- **API Controllers**: JSON-only controllers under `app/controllers/api/v1/`
+- **Singleton User**: Enforced at model level; only one user allowed, always admin
+- **API Controllers**: JSON-only controllers under `app/controllers/api/v1/`, automatically scoped to portfolio user
+- **Serializers**: ActiveModelSerializers for consistent JSON responses
 - **Admin**: RailsAdmin interface for content management
 - **Authentication**: Devise for user management with admin flag
 - **CORS**: Configured for Next.js frontend in `config/initializers/cors.rb`
 
 ## Deployment
 
-The project includes a Dockerfile for containerized deployment. For production deployment, consider:
+The project includes a Dockerfile for containerized deployment. For production deployment:
 
-1. Setting up environment variables
-2. Configuring CORS to allow only your domain
-3. Using a production database (PostgreSQL) for better performance
-4. Setting up Redis for Sidekiq background jobs
+### Required Environment Variables
+```bash
+ADMIN_EMAIL=your-email@example.com
+ADMIN_PASSWORD=your-secure-password
+SECRET_KEY_BASE=generate-with-rails-secret
+```
+
+### Additional Considerations
+1. Configure CORS to allow only your domain in `config/initializers/cors.rb`
+2. Run `rails db:seed` on first deployment to create the admin user
+3. Consider using PostgreSQL for production instead of SQLite for better concurrency
+4. Set up Redis for Sidekiq background jobs
 
 ## License
 
