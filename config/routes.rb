@@ -1,10 +1,12 @@
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
-  devise_for :users
+  # Disable registration routes - singleton user pattern
+  devise_for :users, skip: [:registrations]
 
   # API routes
   namespace :api do
     namespace :v1 do
+      resource :profile, only: [:show]
       resources :works, only: [:index]
       resources :client_projects, only: [:index]
       resources :client_reviews, only: [:index]
