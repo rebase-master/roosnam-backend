@@ -11,6 +11,10 @@ services:
       RAILS_LOG_TO_STDOUT: "1"
       BUNDLE_WITHOUT: ""  # Install all gems including development
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3001}
+      RAILS_HOST: ${RAILS_HOST:-localhost}
+      RAILS_PORT: ${RAILS_PORT:-3000}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
     volumes:
       - .:/rails
       # Note: bundle volume removed - all gems are installed in the Docker image

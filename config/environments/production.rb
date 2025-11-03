@@ -69,8 +69,14 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
-  # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  # Set URL for links generated in mailer templates
+  # Set RAILS_HOST environment variable for your production domain
+  # Example: RAILS_HOST=api.yourdomain.com
+  # Note: RAILS_HOST must be set in production - no default provided
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch('RAILS_HOST', 'api.yourdomain.com'),  # Update default or set via ENV var
+    protocol: ENV.fetch('RAILS_PROTOCOL', 'https')
+  }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via bin/rails credentials:edit.
   # config.action_mailer.smtp_settings = {
