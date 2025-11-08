@@ -10,19 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_08_052206) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_08_094905) do
   create_table "attachments", force: :cascade do |t|
-    t.string "caption"
-    t.text "content_type"
+    t.integer "attachable_id", null: false
+    t.string "attachable_type", null: false
+    t.string "category"
     t.datetime "created_at", null: false
-    t.text "filename"
-    t.integer "owner_id", null: false
-    t.text "owner_type", null: false
-    t.integer "position"
-    t.bigint "size_bytes"
+    t.string "file_name", null: false
+    t.string "file_type"
+    t.string "file_url", null: false
     t.datetime "updated_at", null: false
-    t.string "url"
-    t.index ["owner_type", "owner_id"], name: "index_attachments_on_owner_type_and_owner_id"
+    t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
   end
 
   create_table "certifications", force: :cascade do |t|
@@ -38,43 +36,33 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_08_052206) do
   end
 
   create_table "client_projects", force: :cascade do |t|
+    t.string "client_name"
+    t.string "client_website"
     t.datetime "created_at", null: false
-    t.text "description"
+    t.text "description", null: false
     t.date "end_date"
-    t.string "name"
+    t.string "name", null: false
     t.string "project_url"
     t.string "role"
     t.date "start_date"
     t.string "tech_stack"
     t.datetime "updated_at", null: false
-    t.integer "work_experience_id", null: false
-    t.index ["work_experience_id"], name: "index_client_projects_on_work_experience_id"
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_client_projects_on_user_id"
   end
 
   create_table "client_reviews", force: :cascade do |t|
-    t.string "client_name"
-    t.string "client_position"
     t.integer "client_project_id", null: false
     t.datetime "created_at", null: false
-    t.integer "rating"
-    t.text "review_text"
+    t.integer "rating", limit: 1
+    t.text "review_text", null: false
+    t.string "reviewer_company"
+    t.string "reviewer_name"
+    t.string "reviewer_position"
     t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
     t.index ["client_project_id"], name: "index_client_reviews_on_client_project_id"
-  end
-
-  create_table "companies", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.text "description"
-    t.string "employee_count_range"
-    t.integer "founded_year"
-    t.string "industry"
-    t.string "location"
-    t.string "logo_url"
-    t.string "name"
-    t.datetime "updated_at", null: false
-    t.boolean "verified", default: false, null: false
-    t.string "website"
-    t.index ["name", "location", "website"], name: "index_companies_on_name_location_website", unique: true
+    t.index ["user_id"], name: "index_client_reviews_on_user_id"
   end
 
   create_table "education", force: :cascade do |t|
@@ -91,24 +79,16 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_08_052206) do
     t.index ["user_id"], name: "index_education_on_user_id"
   end
 
-  create_table "experience_skills", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.text "notes"
-    t.string "proficiency_level"
-    t.integer "skill_id", null: false
-    t.datetime "updated_at", null: false
-    t.integer "work_experience_id", null: false
-    t.float "years_of_experience"
-    t.index ["skill_id"], name: "index_experience_skills_on_skill_id"
-    t.index ["work_experience_id"], name: "index_experience_skills_on_work_experience_id"
-  end
-
   create_table "skills", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "name"
+    t.string "name", null: false
+    t.string "proficiency_level"
     t.string "slug"
     t.datetime "updated_at", null: false
+    t.integer "work_experience_id"
+    t.decimal "years_of_experience", precision: 3, scale: 1
     t.index ["slug"], name: "index_skills_on_slug", unique: true
+    t.index ["work_experience_id"], name: "index_skills_on_work_experience_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -143,29 +123,24 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_08_052206) do
   end
 
   create_table "work_experiences", force: :cascade do |t|
-    t.integer "company_id"
-    t.text "company_text"
+    t.string "city"
+    t.string "country"
     t.datetime "created_at", null: false
-    t.text "description"
+    t.string "employer_name", null: false
     t.date "end_date"
-    t.string "experience_letter"
-    t.string "relieving_letter"
+    t.string "job_title"
     t.date "start_date"
-    t.string "title"
+    t.string "state"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["company_id"], name: "index_work_experiences_on_company_id"
     t.index ["user_id"], name: "index_work_experiences_on_user_id"
   end
 
   add_foreign_key "certifications", "users"
-  add_foreign_key "client_projects", "work_experiences"
-  add_foreign_key "client_projects", "work_experiences"
+  add_foreign_key "client_projects", "users"
   add_foreign_key "client_reviews", "client_projects"
+  add_foreign_key "client_reviews", "users"
   add_foreign_key "education", "users"
-  add_foreign_key "experience_skills", "skills"
-  add_foreign_key "experience_skills", "work_experiences"
-  add_foreign_key "experience_skills", "work_experiences"
-  add_foreign_key "work_experiences", "companies"
+  add_foreign_key "skills", "work_experiences"
   add_foreign_key "work_experiences", "users"
 end

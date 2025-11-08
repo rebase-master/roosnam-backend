@@ -4,8 +4,10 @@ class User < ApplicationRecord
   has_many :work_experiences, dependent: :nullify
   has_many :education, class_name: 'Education', dependent: :nullify
   has_many :certifications, dependent: :nullify
-  has_many :attachments, as: :owner, dependent: :destroy
+  has_many :attachments, as: :attachable, dependent: :destroy
 
+  has_many :client_projects
+  has_many :client_reviews
   # JSON serialization for TEXT columns (SQLite compatible)
   serialize :social_links, coder: JSON
   serialize :portfolio_settings, coder: JSON

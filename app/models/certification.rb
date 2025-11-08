@@ -1,6 +1,6 @@
 class Certification < ApplicationRecord
   belongs_to :user
-  has_many :attachments, as: :owner, dependent: :destroy
+  has_many :attachments, as: :attachable, dependent: :destroy
 
   validates :title, presence: true
   validates :issuer, presence: true
