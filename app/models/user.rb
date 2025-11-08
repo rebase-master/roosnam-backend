@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :recoverable, :rememberable, :validatable
 
-  has_many :company_experiences, dependent: :nullify
+  has_many :work_experiences, dependent: :nullify
   has_many :education, class_name: 'Education', dependent: :nullify
   has_many :certifications, dependent: :nullify
   has_many :attachments, as: :owner, dependent: :destroy
@@ -25,9 +25,9 @@ class User < ApplicationRecord
   before_save :calculate_profile_completeness
   after_initialize :set_default_json_fields
 
-  # Current role/company from company_experiences table
+  # Current role/company from work_experiences table
   def current_experience
-    company_experiences
+    work_experiences
       .where(end_date: nil)
       .order(start_date: :desc)
       .first

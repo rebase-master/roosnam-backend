@@ -1,5 +1,5 @@
 class ClientProject < ApplicationRecord
-  belongs_to :company_experience
+  belongs_to :work_experience
 
   has_many :client_reviews, dependent: :destroy
   has_many :attachments, as: :owner, dependent: :destroy

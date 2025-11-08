@@ -62,7 +62,7 @@ RailsAdmin.config do |config|
     show do
       # Hide admin field and associations
       exclude_fields :admin, :encrypted_password, :reset_password_token, :remember_created_at,
-                     :company_experiences, :education, :certifications, :attachments
+                     :work_experiences, :education, :certifications, :attachments
       
       # Format availability_status in title case
       field :availability_status do
@@ -105,7 +105,7 @@ RailsAdmin.config do |config|
     # Only allow editing
     edit do
       exclude_fields :admin, :encrypted_password, :reset_password_token, :remember_created_at,
-                     :reset_password_sent_at, :company_experiences, :education, 
+                     :reset_password_sent_at, :work_experiences, :education, 
                      :certifications, :attachments
 
       group :personal do
@@ -179,7 +179,7 @@ RailsAdmin.config do |config|
 
   # Hide user_id field in forms for all models with user association
   # and auto-assign to current_user
-  config.model 'CompanyExperience' do
+  config.model 'WorkExperience' do
     object_label_method :custom_label
 
     edit do
