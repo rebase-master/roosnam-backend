@@ -1,9 +1,9 @@
 class Skill < ApplicationRecord
-  has_many :experience_skills, dependent: :destroy
-  has_many :work_experiences, through: :experience_skills
-
+  belongs_to :user
   validates :name, presence: true
-  validates :slug, presence: true, uniqueness: true
+  validates :years_of_experience,
+            numericality: { greater_than_or_equal_to: 0, less_than: 100 },
+            allow_nil: true
+  validates :proficiency_level,
+            inclusion: { in: %w[beginner intermediate advanced expert], allow_nil: true }
 end
-
-
