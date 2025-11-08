@@ -1,6 +1,6 @@
 class ExperienceSkill < ApplicationRecord
   belongs_to :skill
-  belongs_to :company_experience
+  belongs_to :work_experience
 
   enum :proficiency_level, {
     beginner:  'Beginner',

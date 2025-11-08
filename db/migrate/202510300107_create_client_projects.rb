@@ -1,7 +1,7 @@
 class CreateClientProjects < ActiveRecord::Migration[8.1]
   def change
     create_table :client_projects do |t|
-      t.integer :company_experience_id, null: false
+      t.integer :work_experience_id, null: false
       t.string :name
       t.text :description
       t.string :tech_stack
@@ -12,8 +12,8 @@ class CreateClientProjects < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_foreign_key :client_projects, :company_experiences, column: :company_experience_id
-    add_index :client_projects, :company_experience_id
+    add_foreign_key :client_projects, :work_experiences, column: :work_experience_id
+    add_index :client_projects, :work_experience_id
   end
 end
 

@@ -1,4 +1,4 @@
-class CompanyExperience < ApplicationRecord
+class WorkExperience < ApplicationRecord
   belongs_to :user
   belongs_to :company, optional: true
 
@@ -24,5 +24,4 @@ class CompanyExperience < ApplicationRecord
     self.user ||= User.first
   end
 end
-
 
