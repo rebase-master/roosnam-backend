@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :work_experiences, dependent: :nullify
   has_many :education, class_name: 'Education', dependent: :nullify
   has_many :certifications, dependent: :nullify
-  has_many :attachments, as: :attachable, dependent: :destroy
+  has_one_attached :profile_photo
 
   has_many :client_projects
   has_many :client_reviews
@@ -53,16 +53,6 @@ class User < ApplicationRecord
   # Display name falls back to full_name
   def display_name
     super.presence || full_name
-  end
-
-  # Profile photo via attachments
-  def profile_photo
-    attachments.find_by(caption: 'profile_photo')
-  end
-
-  # Resume via attachments
-  def resume
-    attachments.find_by(caption: 'resume')
   end
 
   # Portfolio setting helpers

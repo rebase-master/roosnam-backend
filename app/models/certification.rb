@@ -1,9 +1,9 @@
 class Certification < ApplicationRecord
   belongs_to :user
-  has_many :attachments, as: :attachable, dependent: :destroy
 
   validates :title, presence: true
   validates :issuer, presence: true
+  has_one_attached :document
 
   # Auto-assign to singleton user if not set
   before_validation :set_default_user, on: :create

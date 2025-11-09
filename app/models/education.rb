@@ -2,7 +2,7 @@ class Education < ApplicationRecord
   self.table_name = 'education'
 
   belongs_to :user
-  has_many :attachments, as: :attachable, dependent: :destroy
+  has_one_attached :certificate
 
   validates :institution, presence: true
   validates :degree, presence: true
