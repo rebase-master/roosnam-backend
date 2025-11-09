@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative "../config/environment"
-require "solid_queue/cli"
-
-SolidQueue::Cli.start(ARGV)
+# This script is no longer used as solid_queue has been removed.
+# If you need background job processing, configure a different ActiveJob adapter
+# (e.g., sidekiq, delayed_job, etc.) and update this script accordingly.

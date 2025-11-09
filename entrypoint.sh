@@ -3,7 +3,7 @@ set -e
 
 # Create storage directory if it doesn't exist (works with mounted volumes)
 mkdir -p storage
-chmod 777 storage 2>/dev/null || true
+chmod 777 storage 2>/dev/null || echo "Note: Could not chmod storage (running as non-root user, this is normal)"
 
 # Check if we're in development mode
 if [ "$RAILS_ENV" = "development" ]; then
