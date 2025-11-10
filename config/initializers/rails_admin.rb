@@ -246,7 +246,10 @@ RailsAdmin.config do |config|
         field :name do
           required true
         end
-        field :slug
+        field :slug do
+          read_only true
+          help 'Automatically generated from name'
+        end
         field :proficiency_level, :enum do
           enum ['beginner', 'intermediate', 'advanced', 'expert']
         end
@@ -265,7 +268,6 @@ RailsAdmin.config do |config|
         field :name do
           required true
         end
-        field :slug
         field :proficiency_level, :enum do
           enum ['beginner', 'intermediate', 'advanced', 'expert']
         end
