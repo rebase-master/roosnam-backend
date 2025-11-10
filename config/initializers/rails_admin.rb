@@ -241,42 +241,38 @@ RailsAdmin.config do |config|
     end
 
     edit do
-      group :basic do
-        label 'Basic Information'
-        field :name do
-          required true
-        end
-        field :slug do
-          read_only true
-          help 'Automatically generated from name'
-        end
-        field :proficiency_level, :enum do
-          enum ['beginner', 'intermediate', 'advanced', 'expert']
-        end
-        field :years_of_experience do
-          help 'Years of experience with this skill (e.g., 2.5)'
-        end
-        field :work_experience_id do
-          help 'Optional: Associate with a specific work experience'
-        end
+      field :name do
+        required true
+      end
+      field :slug do
+        read_only true
+        help 'Automatically generated from name'
+      end
+      field :proficiency_level, :enum do
+        enum ['beginner', 'intermediate', 'advanced', 'expert']
+      end
+      field :years_of_experience do
+        help 'Years of experience with this skill (e.g., 2.5)'
+      end
+      field :work_experience_id do
+        help 'Optional: Associate with a specific work experience'
       end
     end
 
     create do
-      group :basic do
-        label 'Basic Information'
-        field :name do
-          required true
-        end
-        field :proficiency_level, :enum do
-          enum ['beginner', 'intermediate', 'advanced', 'expert']
-        end
-        field :years_of_experience do
-          help 'Years of experience with this skill (e.g., 2.5)'
-        end
-        field :work_experience_id do
-          help 'Optional: Associate with a specific work experience'
-        end
+      exclude_fields :slug
+
+      field :name do
+        required true
+      end
+      field :proficiency_level, :enum do
+        enum ['beginner', 'intermediate', 'advanced', 'expert']
+      end
+      field :years_of_experience do
+        help 'Years of experience with this skill (e.g., 2.5)'
+      end
+      field :work_experience_id do
+        help 'Optional: Associate with a specific work experience'
       end
     end
   end
@@ -294,86 +290,59 @@ RailsAdmin.config do |config|
     end
 
     edit do
-      exclude_fields :user
+      exclude_fields :user, :start_date, :end_date, :skills, :project_url, :project_images, :description, :client_name, :client_website, :client_reviews
 
-      group :basic do
-        label 'Project Information'
-        field :name do
-          required true
-        end
-        field :description, :text do
-          required true
-        end
-        field :role
-        field :project_url do
-          help 'URL to the project (if publicly available)'
-        end
+      field :name do
+        required true
+      end
+      field :description, :text do
+        required true
+      end
+      field :role
+      field :project_url do
+        help 'URL to the project (if publicly available)'
+      end
+      field :tech_stack do
+        help 'Comma-separated list of technologies used'
+      end
+      field :client_name
+      field :client_website
+      field :start_date
+      field :end_date do
+        help 'Leave blank if project is ongoing'
       end
 
-      group :client do
-        label 'Client Information'
-        field :client_name
-        field :client_website
-      end
-
-      group :details do
-        label 'Project Details'
-        field :tech_stack do
-          help 'Comma-separated list of technologies used'
-        end
-        field :start_date
-        field :end_date do
-          help 'Leave blank if project is ongoing'
-        end
-      end
-
-      group :associations do
-        label 'Associations'
-        field :client_reviews do
+      field :client_reviews do
+          help 'Add review from the client reviews tab'
           read_only true
-        end
       end
     end
 
     create do
-      exclude_fields :user
+      exclude_fields :user, :start_date, :end_date, :skills, :project_url, :project_images, :description, :client_name, :client_website, :client_reviews
 
-      group :basic do
-        label 'Project Information'
-        field :name do
-          required true
-        end
-        field :description, :text do
-          required true
-        end
-        field :role
-        field :project_url do
-          help 'URL to the project (if publicly available)'
-        end
+      field :name do
+        required true
       end
-
-      group :client do
-        label 'Client Information'
-        field :client_name
-        field :client_website
+      field :role
+      field :description, :text do
+        required true
       end
-
-      group :details do
-        label 'Project Details'
-        field :tech_stack do
-          help 'Comma-separated list of technologies used'
-        end
-        field :start_date
-        field :end_date do
-          help 'Leave blank if project is ongoing'
-        end
+      field :tech_stack do
+        help 'Comma-separated list of technologies used'
       end
-
-      group :associations do
-        label 'Associations'
-        field :client_reviews do
-          read_only true
-        end
+      field :project_url do
+        help 'URL to the project (if publicly available)'
+      end
+      field :client_name
+      field :client_website
+      field :start_date
+      field :end_date do
+        help 'Leave blank if project is ongoing'
+      end
+      field :client_reviews do
+        help 'Add review from the client reviews tab'
+        read_only true
       end
     end
   end
@@ -451,18 +420,23 @@ RailsAdmin.config do |config|
   config.model 'Certification' do
     navigation_label 'Portfolio'
 
+    list do
+      fields :id, :title, :issuer, :credential_url, :issue_date, :expiration_date, :created_at, :updated_at
+    end
+
     edit do
-      exclude_fields :user
+      exclude_fields :user, :credential_url, :issuer
 
       group :basic do
+
         label 'Certification Information'
-        field :title do
+        field :title, :string do
           required true
         end
-        field :issuer do
+        field :issuer, :string do
           required true
         end
-        field :credential_url do
+        field :credential_url, :string do
           help 'URL to verify the credential'
         end
       end
@@ -488,13 +462,13 @@ RailsAdmin.config do |config|
 
       group :basic do
         label 'Certification Information'
-        field :title do
+        field :title, :string do
           required true
         end
-        field :issuer do
+        field :issuer, :string do
           required true
         end
-        field :credential_url do
+        field :credential_url, :string do
           help 'URL to verify the credential'
         end
       end
@@ -520,67 +494,70 @@ RailsAdmin.config do |config|
   config.model 'Education' do
     navigation_label 'Portfolio'
 
-    edit do
-      exclude_fields :user
-
-      group :basic do
-        label 'Education Information'
-        field :institution do
-          required true
-        end
-        field :degree do
-          required true
-        end
-        field :field_of_study
-        field :grade
-        field :description, :text
-      end
-
-      group :dates do
-        label 'Dates'
-        field :start_year
-        field :end_year do
-          help 'Leave blank if currently studying'
-        end
-      end
-
-      group :attachments do
-        label 'Attachments'
-        field :certificate do
-          help 'Upload degree/certificate document'
+    list do
+      fields :school_name, :degree, :field_of_study, :start_year, :end_year
+      field :degree_status, :string do
+        searchable true
+        filterable true
+        formatted_value do
+          value.to_s.humanize
         end
       end
     end
 
+    edit do
+      exclude_fields :user, :school_name, :degree, :degree_status, :field_of_study, :start_year, :end_year, :certificate
+
+      field :school_name do
+        required true
+      end
+      field :degree do
+        required true
+      end
+      field :degree_status, :enum do
+        required true
+        enum_method :degree_status_enum
+      end
+      field :field_of_study do
+        required true
+      end
+      field :start_year do
+        required true
+      end
+      field :end_year do
+        required true
+        help 'Year when education ended or is expected to end'
+      end
+      field :certificate do
+        help 'Upload degree/certificate document'
+      end
+    end
+
     create do
-      exclude_fields :user
+      exclude_fields :user, :school_name, :degree, :degree_status, :field_of_study, :start_year, :end_year, :certificate
 
-      group :basic do
-        label 'Education Information'
-        field :institution do
-          required true
-        end
-        field :degree do
-          required true
-        end
-        field :field_of_study
-        field :grade
-        field :description, :text
+      field :school_name do
+        required true
       end
-
-      group :dates do
-        label 'Dates'
-        field :start_year
-        field :end_year do
-          help 'Leave blank if currently studying'
-        end
+      field :degree do
+        required true
       end
-
-      group :attachments do
-        label 'Attachments'
-        field :certificate do
-          help 'Upload degree/certificate document'
-        end
+      field :degree_status, :enum do
+        required true
+        enum_method :degree_status_enum
+      end
+      field :field_of_study do
+        required true
+      end
+      field :start_year do
+        required true
+      end
+      field :end_year do
+        required true
+        help 'Year when education ended or is expected to end'
+      end
+      field :certificate do
+        help 'Upload degree/certificate document'
       end
     end
   end

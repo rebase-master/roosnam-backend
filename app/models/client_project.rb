@@ -7,6 +7,14 @@ class ClientProject < ApplicationRecord
   has_many :client_reviews, dependent: :destroy
 
   validates :name, presence: true
+  # Auto-assign to singleton user if not set
+  before_validation :set_default_user, on: :create
+
+  private
+
+  def set_default_user
+    self.user ||= User.first
+  end
 end
 
 
