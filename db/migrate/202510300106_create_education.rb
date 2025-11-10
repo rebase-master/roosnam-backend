@@ -2,13 +2,12 @@ class CreateEducation < ActiveRecord::Migration[8.1]
   def change
     create_table :education do |t|
       t.integer :user_id, null: false
-      t.text :institution
-      t.text :degree
-      t.text :field_of_study
+      t.string :school_name
+      t.string :degree
+      t.string :degree_status
       t.integer :start_year
       t.integer :end_year
-      t.text :grade
-      t.text :description
+      t.string :field_of_study
       t.timestamps
     end
 

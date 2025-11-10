@@ -39,18 +39,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_08_130819) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "attachments", force: :cascade do |t|
-    t.integer "attachable_id", null: false
-    t.string "attachable_type", null: false
-    t.string "category"
-    t.datetime "created_at", null: false
-    t.string "file_name", null: false
-    t.string "file_type"
-    t.string "file_url", null: false
-    t.datetime "updated_at", null: false
-    t.index ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable"
-  end
-
   create_table "certifications", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "credential_url"
@@ -95,12 +83,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_08_130819) do
 
   create_table "education", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "degree"
-    t.text "description"
+    t.string "degree"
+    t.string "degree_status"
     t.integer "end_year"
-    t.text "field_of_study"
-    t.text "grade"
-    t.text "institution"
+    t.string "field_of_study"
+    t.string "school_name"
     t.integer "start_year"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
