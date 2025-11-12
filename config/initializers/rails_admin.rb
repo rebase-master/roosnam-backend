@@ -561,6 +561,19 @@ RailsAdmin.config do |config|
       end
     end
   end
+
+  # Hide ActiveStorage models from navigation
+  # File uploads will be handled from respective model pages only
+  config.model 'ActiveStorage::Blob' do
+    visible false
+  end
+
+  config.model 'ActiveStorage::Attachment' do
+    visible false
+  end
+  config.model 'ActiveStorage::VariantRecord' do
+    visible false
+  end
 end
 
 
