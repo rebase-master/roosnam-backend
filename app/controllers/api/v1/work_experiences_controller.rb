@@ -5,10 +5,12 @@ module Api
       def index
         experiences = WorkExperience
           .where(user_id: portfolio_user.id)
-          .select(:id, :user_id, :company_id, :company_text, :title, :start_date, :end_date, :description)
           .order(start_date: :desc, id: :desc)
 
         render json: experiences
+      rescue Exception => e
+        puts "An error occurred: #{e.message}"
+        render json: { status: :not_found, error: "Internal server error" }
       end
     end
   end
