@@ -10,19 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_01_083226) do
-  create_table "attachments", force: :cascade do |t|
-    t.string "caption"
-    t.text "content_type"
+ActiveRecord::Schema[8.1].define(version: 2025_11_08_130819) do
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
-    t.text "filename"
-    t.integer "owner_id", null: false
-    t.text "owner_type", null: false
-    t.integer "position"
-    t.bigint "size_bytes"
-    t.datetime "updated_at", null: false
-    t.string "url"
-    t.index ["owner_type", "owner_id"], name: "index_attachments_on_owner_type_and_owner_id"
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "certifications", force: :cascade do |t|
@@ -38,93 +52,58 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_01_083226) do
   end
 
   create_table "client_projects", force: :cascade do |t|
-    t.integer "company_experience_id", null: false
+    t.string "client_name"
+    t.string "client_website"
     t.datetime "created_at", null: false
-    t.text "description"
+    t.text "description", null: false
     t.date "end_date"
-    t.string "name"
+    t.string "name", null: false
     t.string "project_url"
     t.string "role"
     t.date "start_date"
     t.string "tech_stack"
     t.datetime "updated_at", null: false
-    t.index ["company_experience_id"], name: "index_client_projects_on_company_experience_id"
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_client_projects_on_user_id"
   end
 
   create_table "client_reviews", force: :cascade do |t|
-    t.string "client_name"
-    t.string "client_position"
     t.integer "client_project_id", null: false
     t.datetime "created_at", null: false
-    t.integer "rating"
-    t.text "review_text"
-    t.datetime "updated_at", null: false
-    t.index ["client_project_id"], name: "index_client_reviews_on_client_project_id"
-  end
-
-  create_table "companies", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.text "description"
-    t.string "employee_count_range"
-    t.integer "founded_year"
-    t.string "industry"
-    t.string "location"
-    t.string "logo_url"
-    t.string "name"
-    t.datetime "updated_at", null: false
-    t.boolean "verified", default: false, null: false
-    t.string "website"
-    t.index ["name", "location", "website"], name: "index_companies_on_name_location_website", unique: true
-  end
-
-  create_table "company_experiences", force: :cascade do |t|
-    t.integer "company_id"
-    t.text "company_text"
-    t.datetime "created_at", null: false
-    t.text "description"
-    t.date "end_date"
-    t.string "experience_letter"
-    t.string "relieving_letter"
-    t.date "start_date"
-    t.string "title"
+    t.integer "rating", limit: 1
+    t.text "review_text", null: false
+    t.string "reviewer_company"
+    t.string "reviewer_name"
+    t.string "reviewer_position"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["company_id"], name: "index_company_experiences_on_company_id"
-    t.index ["user_id"], name: "index_company_experiences_on_user_id"
+    t.index ["client_project_id"], name: "index_client_reviews_on_client_project_id"
+    t.index ["user_id"], name: "index_client_reviews_on_user_id"
   end
 
   create_table "education", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "degree"
-    t.text "description"
+    t.string "degree"
+    t.string "degree_status"
     t.integer "end_year"
-    t.text "field_of_study"
-    t.text "grade"
-    t.text "institution"
+    t.string "field_of_study"
+    t.string "school_name"
     t.integer "start_year"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_education_on_user_id"
   end
 
-  create_table "experience_skills", force: :cascade do |t|
-    t.integer "company_experience_id", null: false
-    t.datetime "created_at", null: false
-    t.text "notes"
-    t.string "proficiency_level"
-    t.integer "skill_id", null: false
-    t.datetime "updated_at", null: false
-    t.float "years_of_experience"
-    t.index ["company_experience_id"], name: "index_experience_skills_on_company_experience_id"
-    t.index ["skill_id"], name: "index_experience_skills_on_skill_id"
-  end
-
   create_table "skills", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "name"
+    t.string "name", null: false
+    t.string "proficiency_level"
     t.string "slug"
     t.datetime "updated_at", null: false
+    t.integer "work_experience_id"
+    t.decimal "years_of_experience", precision: 3, scale: 1
     t.index ["slug"], name: "index_skills_on_slug", unique: true
+    t.index ["work_experience_id"], name: "index_skills_on_work_experience_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -158,12 +137,27 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_01_083226) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "work_experiences", force: :cascade do |t|
+    t.string "city"
+    t.string "country"
+    t.datetime "created_at", null: false
+    t.string "employer_name", null: false
+    t.date "end_date"
+    t.string "job_title"
+    t.date "start_date"
+    t.string "state"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_work_experiences_on_user_id"
+  end
+
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "certifications", "users"
-  add_foreign_key "client_projects", "company_experiences"
+  add_foreign_key "client_projects", "users"
   add_foreign_key "client_reviews", "client_projects"
-  add_foreign_key "company_experiences", "companies"
-  add_foreign_key "company_experiences", "users"
+  add_foreign_key "client_reviews", "users"
   add_foreign_key "education", "users"
-  add_foreign_key "experience_skills", "company_experiences"
-  add_foreign_key "experience_skills", "skills"
+  add_foreign_key "skills", "work_experiences"
+  add_foreign_key "work_experiences", "users"
 end

@@ -67,7 +67,7 @@ http://localhost:3000/api/v1
 All endpoints return data scoped to the single portfolio user:
 
 - **Works**: `/api/v1/works`
-- **Company Experiences**: `/api/v1/company_experiences`
+- **Work Experiences**: `/api/v1/work_experiences`
 - **Client Projects**: `/api/v1/client_projects`
 - **Client Reviews**: `/api/v1/client_reviews`
 - **Experience Skills**: `/api/v1/experience_skills`
@@ -77,7 +77,7 @@ All endpoints return data scoped to the single portfolio user:
 ### Example Request
 
 ```bash
-curl http://localhost:3000/api/v1/company_experiences
+curl http://localhost:3000/api/v1/work_experiences
 ```
 
 ## Admin Interface

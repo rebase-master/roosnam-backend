@@ -1,16 +1,18 @@
 class CreateClientReviews < ActiveRecord::Migration[8.1]
   def change
     create_table :client_reviews do |t|
-      t.integer :client_project_id, null: false
-      t.string :client_name
-      t.string :client_position
-      t.text :review_text
-      t.integer :rating
+      t.references :client_project, null: false, index: true
+      t.references :user, null: false, index: true
+      t.string :reviewer_name
+      t.string :reviewer_position
+      t.string :reviewer_company
+      t.text :review_text, null: false
+      t.integer :rating, limit: 1
       t.timestamps
     end
 
-    add_foreign_key :client_reviews, :client_projects, column: :client_project_id
-    add_index :client_reviews, :client_project_id
+    add_foreign_key :client_reviews, :client_projects
+    add_foreign_key :client_reviews, :users
   end
 end
 

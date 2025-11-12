@@ -1,13 +1,11 @@
-class CompanyExperience < ApplicationRecord
+class WorkExperience < ApplicationRecord
   belongs_to :user
   belongs_to :company, optional: true
 
-  has_many :experience_skills, dependent: :destroy
-  has_many :skills, through: :experience_skills
+  has_many :skills
   has_many :client_projects, dependent: :destroy
-  has_many :attachments, as: :owner, dependent: :destroy
 
-  validates :title, presence: true
+  validates :job_title, presence: true
   validates :start_date, presence: true
 
   # Auto-assign to singleton user if not set
@@ -15,7 +13,7 @@ class CompanyExperience < ApplicationRecord
 
   # Custom label for RailsAdmin
   def custom_label
-    "#{title} at #{company&.name || company_text || 'Unknown Company'}"
+    "#{job_title} at #{employer_name || 'Unknown Company'}"
   end
 
   private
@@ -24,5 +22,4 @@ class CompanyExperience < ApplicationRecord
     self.user ||= User.first
   end
 end
-
 

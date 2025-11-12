@@ -1,4 +1,5 @@
 RailsAdmin.config do |config|
+  config.asset_source = :sprockets
   config.authenticate_with do
     warden.authenticate! scope: :user
   end
@@ -62,7 +63,8 @@ RailsAdmin.config do |config|
     show do
       # Hide admin field and associations
       exclude_fields :admin, :encrypted_password, :reset_password_token, :remember_created_at,
-                     :company_experiences, :education, :certifications, :attachments
+                     :work_experiences, :education, :certifications, :client_projects, 
+                     :client_reviews, :attachments
       
       # Format availability_status in title case
       field :availability_status do
@@ -105,7 +107,7 @@ RailsAdmin.config do |config|
     # Only allow editing
     edit do
       exclude_fields :admin, :encrypted_password, :reset_password_token, :remember_created_at,
-                     :reset_password_sent_at, :company_experiences, :education, 
+                     :reset_password_sent_at, :work_experiences, :education, 
                      :certifications, :attachments
 
       group :personal do
@@ -177,55 +179,400 @@ RailsAdmin.config do |config|
     end
   end
 
-  # Hide user_id field in forms for all models with user association
-  # and auto-assign to current_user
-  config.model 'CompanyExperience' do
+  # WorkExperience configuration
+  config.model 'WorkExperience' do
     object_label_method :custom_label
+    navigation_label 'Portfolio'
 
-    edit do
+    list do
+      fields :id, :employer_name, :job_title, :start_date, :end_date, :city, :state, :country, :created_at
+    end
+
+    show do
       exclude_fields :user
     end
 
+    edit do
+      exclude_fields :user
+      field :employer_name do
+        required true
+      end
+      field :job_title
+      field :start_date do
+        required true
+      end
+      field :end_date do
+        help 'Leave blank if currently working here'
+      end
+      field :city
+      field :state
+      field :country
+    end
+
     create do
-      field :company
-      field :company_text
-      field :title
+      exclude_fields :user, :skills, :client_projects, :city, :state, :country, :end_date
+
+      field :employer_name do
+        required true
+      end
+      field :job_title
+      field :start_date do
+        required true
+      end
+      field :end_date do
+        help 'Leave blank if currently working here (optional)'
+      end
+      field :city
+      field :state
+      field :country
+    end
+  end
+
+  # Skill configuration
+  config.model 'Skill' do
+    navigation_label 'Portfolio'
+
+    list do
+      fields :id, :name, :proficiency_level, :years_of_experience, :slug, :work_experience_id, :created_at
+    end
+
+    show do
+      field :work_experience
+    end
+
+    edit do
+      field :name do
+        required true
+      end
+      field :slug do
+        read_only true
+        help 'Automatically generated from name'
+      end
+      field :proficiency_level, :enum do
+        enum ['beginner', 'intermediate', 'advanced', 'expert']
+      end
+      field :years_of_experience do
+        help 'Years of experience with this skill (e.g., 2.5)'
+      end
+      field :work_experience_id do
+        help 'Optional: Associate with a specific work experience'
+      end
+    end
+
+    create do
+      exclude_fields :slug
+
+      field :name do
+        required true
+      end
+      field :proficiency_level, :enum do
+        enum ['beginner', 'intermediate', 'advanced', 'expert']
+      end
+      field :years_of_experience do
+        help 'Years of experience with this skill (e.g., 2.5)'
+      end
+      field :work_experience_id do
+        help 'Optional: Associate with a specific work experience'
+      end
+    end
+  end
+
+  # ClientProject configuration
+  config.model 'ClientProject' do
+    navigation_label 'Portfolio'
+
+    list do
+      fields :id, :name, :client_name, :role, :start_date, :end_date, :created_at
+    end
+
+    show do
+      exclude_fields :user
+    end
+
+    edit do
+      exclude_fields :user, :start_date, :end_date, :skills, :project_url, :project_images, :description, :client_name, :client_website, :client_reviews
+
+      field :name do
+        required true
+      end
+      field :description, :text do
+        required true
+      end
+      field :role
+      field :project_url do
+        help 'URL to the project (if publicly available)'
+      end
+      field :tech_stack do
+        help 'Comma-separated list of technologies used'
+      end
+      field :client_name
+      field :client_website
       field :start_date
-      field :end_date
-      field :description
-      field :experience_letter
-      field :relieving_letter
+      field :end_date do
+        help 'Leave blank if project is ongoing'
+      end
+
+      field :client_reviews do
+          help 'Add review from the client reviews tab'
+          read_only true
+      end
+    end
+
+    create do
+      exclude_fields :user, :start_date, :end_date, :skills, :project_url, :project_images, :description, :client_name, :client_website, :client_reviews
+
+      field :name do
+        required true
+      end
+      field :role
+      field :description, :text do
+        required true
+      end
+      field :tech_stack do
+        help 'Comma-separated list of technologies used'
+      end
+      field :project_url do
+        help 'URL to the project (if publicly available)'
+      end
+      field :client_name
+      field :client_website
+      field :start_date
+      field :end_date do
+        help 'Leave blank if project is ongoing'
+      end
+      field :client_reviews do
+        help 'Add review from the client reviews tab'
+        read_only true
+      end
     end
   end
 
+  # ClientReview configuration
+  config.model 'ClientReview' do
+    navigation_label 'Portfolio'
+
+    list do
+      fields :id, :reviewer_name, :reviewer_company, :rating, :client_project, :created_at
+    end
+
+    show do
+      exclude_fields :user, :client_project_id
+    end
+
+    edit do
+      exclude_fields :user
+
+      group :review do
+        label 'Review Content'
+        field :review_text, :text do
+          required true
+        end
+        field :rating do
+          help 'Rating from 1 to 5'
+        end
+      end
+
+      group :reviewer do
+        label 'Reviewer Information'
+        field :reviewer_name
+        field :reviewer_position
+        field :reviewer_company
+      end
+
+      group :associations do
+        label 'Associations'
+        field :client_project do
+          required true
+        end
+      end
+    end
+
+    create do
+      exclude_fields :user
+
+      group :review do
+        label 'Review Content'
+        field :review_text, :text do
+          required true
+        end
+        field :rating do
+          help 'Rating from 1 to 5'
+        end
+      end
+
+      group :reviewer do
+        label 'Reviewer Information'
+        field :reviewer_name
+        field :reviewer_position
+        field :reviewer_company
+      end
+
+      group :associations do
+        label 'Associations'
+        field :client_project do
+          required true
+        end
+      end
+    end
+  end
+
+  # Certification configuration
   config.model 'Certification' do
+    navigation_label 'Portfolio'
+
+    list do
+      fields :id, :title, :issuer, :credential_url, :issue_date, :expiration_date, :created_at, :updated_at
+    end
+
     edit do
-      exclude_fields :user
+      exclude_fields :user, :credential_url, :issuer
+
+      group :basic do
+
+        label 'Certification Information'
+        field :title, :string do
+          required true
+        end
+        field :issuer, :string do
+          required true
+        end
+        field :credential_url, :string do
+          help 'URL to verify the credential'
+        end
+      end
+
+      group :dates do
+        label 'Dates'
+        field :issue_date
+        field :expiration_date do
+          help 'Leave blank if certification does not expire'
+        end
+      end
+
+      group :attachments do
+        label 'Attachments'
+        field :document do
+          help 'Upload certification document'
+        end
+      end
     end
 
     create do
-      field :title
-      field :issuer
-      field :issue_date
-      field :expiration_date
-      field :credential_url
+      exclude_fields :user
+
+      group :basic do
+        label 'Certification Information'
+        field :title, :string do
+          required true
+        end
+        field :issuer, :string do
+          required true
+        end
+        field :credential_url, :string do
+          help 'URL to verify the credential'
+        end
+      end
+
+      group :dates do
+        label 'Dates'
+        field :issue_date
+        field :expiration_date do
+          help 'Leave blank if certification does not expire'
+        end
+      end
+
+      group :attachments do
+        label 'Attachments'
+        field :document do
+          help 'Upload certification document'
+        end
+      end
     end
   end
 
+  # Education configuration
   config.model 'Education' do
+    navigation_label 'Portfolio'
+
+    list do
+      fields :school_name, :degree, :field_of_study, :start_year, :end_year
+      field :degree_status, :string do
+        searchable true
+        filterable true
+        formatted_value do
+          value.to_s.humanize
+        end
+      end
+    end
+
     edit do
-      exclude_fields :user
+      exclude_fields :user, :school_name, :degree, :degree_status, :field_of_study, :start_year, :end_year, :certificate
+
+      field :school_name do
+        required true
+      end
+      field :degree do
+        required true
+      end
+      field :degree_status, :enum do
+        required true
+        enum_method :degree_status_enum
+      end
+      field :field_of_study do
+        required true
+      end
+      field :start_year do
+        required true
+      end
+      field :end_year do
+        required true
+        help 'Year when education ended or is expected to end'
+      end
+      field :certificate do
+        help 'Upload degree/certificate document'
+      end
     end
 
     create do
-      field :institution
-      field :degree
-      field :field_of_study
-      field :start_year
-      field :end_year
-      field :grade
-      field :description
+      exclude_fields :user, :school_name, :degree, :degree_status, :field_of_study, :start_year, :end_year, :certificate
+
+      field :school_name do
+        required true
+      end
+      field :degree do
+        required true
+      end
+      field :degree_status, :enum do
+        required true
+        enum_method :degree_status_enum
+      end
+      field :field_of_study do
+        required true
+      end
+      field :start_year do
+        required true
+      end
+      field :end_year do
+        required true
+        help 'Year when education ended or is expected to end'
+      end
+      field :certificate do
+        help 'Upload degree/certificate document'
+      end
     end
+  end
+
+  # Hide ActiveStorage models from navigation
+  # File uploads will be handled from respective model pages only
+  config.model 'ActiveStorage::Blob' do
+    visible false
+  end
+
+  config.model 'ActiveStorage::Attachment' do
+    visible false
+  end
+  config.model 'ActiveStorage::VariantRecord' do
+    visible false
   end
 end
 

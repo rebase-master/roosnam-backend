@@ -10,7 +10,7 @@ Rails.application.routes.draw do
       resources :works, only: [:index]
       resources :client_projects, only: [:index]
       resources :client_reviews, only: [:index]
-      resources :company_experiences, only: [:index]
+      resources :work_experiences, only: [:index]
       resources :experience_skills, only: [:index]
       resources :certifications, only: [:index]
       resources :education, only: [:index]
