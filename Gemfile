@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "active_model_serializers", "~> 0.10.15"
 gem "active_storage_validations", "~> 3.0.2"
-gem "bootsnap", "~> 1.18.6", require: false
+gem "bootsnap", "~> 1.19.0", require: false
 gem "bootstrap", "~> 5.3.5"
 gem "devise", "~> 4.9.4"
 gem "kamal", "~> 2.8.2", require: false
