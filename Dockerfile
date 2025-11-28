@@ -19,8 +19,9 @@ RUN apt-get update -qq && \
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development:test" \
     LD_PRELOAD="/usr/local/lib/libjemalloc.so"
+# Note: BUNDLE_WITHOUT is not set here - it will be set by docker-compose.yml
+# For production, set BUNDLE_WITHOUT="development:test" in your deployment config
 
 FROM base
 
@@ -56,8 +57,11 @@ RUN bundle exec bootsnap precompile app/ lib/
 COPY --chown=rails:rails entrypoint.sh /rails/entrypoint.sh
 RUN chmod +x /rails/entrypoint.sh
 
-# Ensure proper ownership
-RUN chown -R rails:rails /rails/tmp /rails/log /rails/storage
+# Ensure proper ownership of all directories including bundle path
+# Create cache directory structure and ensure it's writable
+RUN chown -R rails:rails /rails/tmp /rails/log /rails/storage "${BUNDLE_PATH}" && \
+    mkdir -p "${BUNDLE_PATH}"/ruby/3.2.0/cache && \
+    chown -R rails:rails "${BUNDLE_PATH}"
 
 # Switch to non-root user
 USER 1000:1000

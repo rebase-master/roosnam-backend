@@ -9,6 +9,25 @@ chmod 777 storage 2>/dev/null || echo "Note: Could not chmod storage (running as
 if [ "$RAILS_ENV" = "development" ]; then
   echo "Running in development mode - preparing database..."
 
+  # Ensure BUNDLE_WITHOUT is unset or empty to install all gems including test
+  if [ -n "$BUNDLE_WITHOUT" ] && [ "$BUNDLE_WITHOUT" != "" ]; then
+    unset BUNDLE_WITHOUT
+  fi
+
+  # Check bundle dependencies
+  # Gems are already installed during Docker build, so we only need to install
+  # if Gemfile has changed (via volume mount) and new gems are needed
+  echo "Checking bundle dependencies..."
+  if bundle check >/dev/null 2>&1; then
+    echo "All gems are installed."
+  else
+    echo "Gemfile may have changed. Installing missing gems to local path..."
+    # Use local bundle path to avoid permission issues with system path
+    export BUNDLE_PATH="/rails/vendor/bundle"
+    mkdir -p "${BUNDLE_PATH}"
+    bundle install
+  fi
+
   # Create database if it doesn't exist
   ./bin/rails db:create || true
   
