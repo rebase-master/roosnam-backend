@@ -2,17 +2,19 @@ module Api
   module V1
     class ClientProjectsController < BaseController
       def index
-        projects = ClientProject
-          .where(user_id: portfolio_user.id )
-          .order(start_date: :desc, id: :desc)
+        projects = portfolio_user
+                     .client_projects
+                     .includes(:skills, :client_reviews)
+                     .with_attached_project_images
+                     .order(start_date: :desc, id: :desc)
 
-        render json: projects
-      rescue Exception => e
-        Rails.logger.error("API ERROR: An error occurred: #{e.message}")
-        render json: { status: :not_found, error: "Internal server error" }
+        render json: projects, each_serializer: ClientProjectSerializer
+      end
+
+      def show
+        project = portfolio_user.client_projects.find(params[:id])
+        render json: project, serializer: ClientProjectSerializer
       end
     end
   end
 end
-
-
