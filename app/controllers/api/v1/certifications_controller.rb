@@ -8,6 +8,9 @@ module Api
           .order(issue_date: :desc, id: :desc)
 
         render json: certs
+      rescue Exception => e
+        Rails.logger.error("API ERROR: An error occurred: #{e.message}")
+        render json: { status: :not_found, error: "Internal server error" }
       end
     end
   end

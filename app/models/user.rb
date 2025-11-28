@@ -36,7 +36,7 @@ class User < ApplicationRecord
   end
 
   def current_role
-    current_experience&.title
+    current_experience&.job_title  # Changed from .title
   end
 
   def current_company_name
@@ -46,7 +46,7 @@ class User < ApplicationRecord
     if exp.company
       exp.company.name
     else
-      exp.company_text
+      exp.employer_name  # Changed from .company_text
     end
   end
 

@@ -9,7 +9,7 @@ module Api
 
         render json: experiences
       rescue Exception => e
-        puts "An error occurred: #{e.message}"
+        Rails.logger.error("API ERROR: An error occurred: #{e.message}")
         render json: { status: :not_found, error: "Internal server error" }
       end
     end

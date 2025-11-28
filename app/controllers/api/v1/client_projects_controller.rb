@@ -3,12 +3,13 @@ module Api
     class ClientProjectsController < BaseController
       def index
         projects = ClientProject
-          .joins(:work_experience)
-          .where(work_experiences: { user_id: portfolio_user.id })
-          .select(:id, :name, :role, :project_url, :start_date, :end_date, :work_experience_id)
+          .where(user_id: portfolio_user.id )
           .order(start_date: :desc, id: :desc)
 
         render json: projects
+      rescue Exception => e
+        Rails.logger.error("API ERROR: An error occurred: #{e.message}")
+        render json: { status: :not_found, error: "Internal server error" }
       end
     end
   end
