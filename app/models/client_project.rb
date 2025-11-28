@@ -1,14 +1,24 @@
 class ClientProject < ApplicationRecord
   belongs_to :user
+
   has_many :client_reviews, dependent: :destroy
-  has_and_belongs_to_many :skills
+
+  has_many :project_skills, dependent: :destroy
+  has_many :skills, through: :project_skills
+
   has_many_attached :project_images
 
-  has_many :client_reviews, dependent: :destroy
-
   validates :name, presence: true
-  # Auto-assign to singleton user if not set
+  validates :description, presence: true
+
   before_validation :set_default_user, on: :create
+
+  scope :featured, -> { where(featured: true) }
+  scope :recent, -> { order(end_date: :desc, start_date: :desc) }
+
+  def tech_stack_array
+    tech_stack&.split(',')&.map(&:strip) || []
+  end
 
   private
 
@@ -16,5 +26,3 @@ class ClientProject < ApplicationRecord
     self.user ||= User.first
   end
 end
-
-
