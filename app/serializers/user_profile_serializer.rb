@@ -6,29 +6,33 @@ class UserProfileSerializer < ActiveModel::Serializer
              :social_links, :profile_photo_url, :resume_url,
              :seo_title, :seo_description, :profile_completeness
 
-  # Conditionally show email based on settings
   def email
     object.show_email? ? object.email : nil
   end
 
-  # Conditionally show phone based on settings
   def phone
     object.show_phone? ? object.phone : nil
   end
 
-  # Get current company from experiences
   def current_company
     object.current_company_name
   end
 
-  # Profile photo URL from attachments
   def profile_photo_url
-    object.profile_photo&.url
+    return nil unless object.profile_photo.attached?
+
+    Rails.application.routes.url_helpers.rails_blob_url(
+      object.profile_photo,
+      only_path: true
+    )
   end
 
-  # Resume URL from attachments
   def resume_url
-    object.resume&.url
+    return nil unless object.resume.attached?
+
+    Rails.application.routes.url_helpers.rails_blob_url(
+      object.resume,
+      only_path: true
+    )
   end
 end
-
