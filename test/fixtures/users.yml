@@ -1,11 +1,20 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+portfolio_user:
+  email: john@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  full_name: John Doe
+  display_name: John D.
+  headline: Senior Full Stack Developer
+  bio: Experienced developer with 10+ years in web development
+  location: San Francisco, CA
+  phone: "+1-555-0123"
+  tagline: Building innovative web solutions
+  years_of_experience: 10
+  availability_status: available
+  admin: true
+  profile_completeness: 85
+  social_links: '{"github": "https://github.com/johndoe", "linkedin": "https://linkedin.com/in/johndoe"}'
+  portfolio_settings: '{"show_email": true, "show_phone": false, "theme_preference": "light"}'
+  hourly_rate: "$150/hr"
+  timezone: "America/Los_Angeles"
+  seo_title: "John Doe - Full Stack Developer"
+  seo_description: "Portfolio of John Doe, an experienced full stack developer"

@@ -1,0 +1,17 @@
+ecommerce_review:
+  user: portfolio_user
+  client_project: ecommerce_project
+  reviewer_name: Jane Smith
+  reviewer_position: CTO
+  reviewer_company: Retail Giant Inc
+  review_text: John delivered an exceptional e-commerce platform. His technical expertise and attention to detail were outstanding.
+  rating: 5
+
+analytics_review:
+  user: portfolio_user
+  client_project: analytics_dashboard
+  reviewer_name: Bob Johnson
+  reviewer_position: Product Manager
+  reviewer_company: Data Corp
+  review_text: Great work on the analytics dashboard. The real-time features work perfectly.
+  rating: 4

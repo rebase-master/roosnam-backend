@@ -1,4 +1,6 @@
 class Skill < ApplicationRecord
+  belongs_to :work_experience, optional: true
+
   validates :name, presence: true
   validates :years_of_experience,
             numericality: { greater_than_or_equal_to: 0, less_than: 100 },

@@ -1,0 +1,20 @@
+ruby:
+  name: Ruby
+  slug: ruby
+  proficiency_level: expert
+  years_of_experience: 8.5
+  work_experience_id: <%= ActiveRecord::FixtureSet.identify(:current_job) %>
+
+rails:
+  name: Ruby on Rails
+  slug: ruby-on-rails
+  proficiency_level: expert
+  years_of_experience: 8.0
+  work_experience_id: <%= ActiveRecord::FixtureSet.identify(:current_job) %>
+
+javascript:
+  name: JavaScript
+  slug: javascript
+  proficiency_level: advanced
+  years_of_experience: 7.0
+  work_experience_id: <%= ActiveRecord::FixtureSet.identify(:previous_job) %>

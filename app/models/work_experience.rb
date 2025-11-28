@@ -1,9 +1,10 @@
 class WorkExperience < ApplicationRecord
   belongs_to :user
-  belongs_to :company, optional: true
 
   has_many :skills
-  has_many :client_projects, dependent: :destroy
+  # Note: client_projects relationship exists in code but work_experience_id column
+  # doesn't exist in client_projects table, so commenting out to avoid errors
+  # has_many :client_projects, dependent: :destroy
 
   validates :job_title, presence: true
   validates :start_date, presence: true

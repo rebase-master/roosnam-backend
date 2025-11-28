@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :education, class_name: 'Education', dependent: :nullify
   has_many :certifications, dependent: :nullify
   has_one_attached :profile_photo
+  has_one_attached :resume
 
   has_many :client_projects
   has_many :client_reviews
@@ -43,11 +44,8 @@ class User < ApplicationRecord
     exp = current_experience
     return nil unless exp
 
-    if exp.company
-      exp.company.name
-    else
-      exp.employer_name  # Changed from .company_text
-    end
+    # Company association doesn't exist, just use employer_name
+    exp.employer_name
   end
 
   # Display name falls back to full_name

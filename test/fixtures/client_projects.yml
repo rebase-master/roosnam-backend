@@ -1,0 +1,23 @@
+ecommerce_project:
+  user: portfolio_user
+  name: E-Commerce Platform
+  description: Built a scalable e-commerce platform serving 1M+ users
+  client_name: Retail Giant Inc
+  client_website: https://retailgiant.com
+  role: Lead Developer
+  start_date: <%= 1.year.ago.to_date %>
+  end_date: <%= 3.months.ago.to_date %>
+  project_url: https://project.example.com
+  tech_stack: Ruby on Rails, React, PostgreSQL, AWS
+
+analytics_dashboard:
+  user: portfolio_user
+  name: Analytics Dashboard
+  description: Real-time analytics dashboard for business intelligence
+  client_name: Data Corp
+  client_website: https://datacorp.com
+  role: Full Stack Developer
+  start_date: <%= 2.years.ago.to_date %>
+  end_date: <%= 1.year.ago.to_date %>
+  project_url: https://analytics.example.com
+  tech_stack: Rails, Vue.js, Redis, PostgreSQL
