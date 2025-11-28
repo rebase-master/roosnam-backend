@@ -7,11 +7,9 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resource :profile, only: [:show], controller: 'profile'
-      resources :works, only: [:index]
       resources :client_projects, only: [:index]
       resources :client_reviews, only: [:index]
       resources :work_experiences, only: [:index]
-      resources :experience_skills, only: [:index]
       resources :certifications, only: [:index]
       resources :education, only: [:index]
     end
