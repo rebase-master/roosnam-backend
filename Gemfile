@@ -7,6 +7,7 @@ gem "bootstrap", "~> 5.3.5"
 gem "devise", "~> 4.9.4"
 gem "kamal", "~> 2.8.2", require: false
 gem "puma", "~> 7.1.0"
+gem "rack-attack", "~> 6.8.0"
 gem "rack-cors", "~> 3.0.0"
 gem "rails", "~> 8.1.1"
 gem "rails_admin", "~> 3.3.0"
@@ -15,7 +16,6 @@ gem "sprockets-rails", "~> 3.5.2"
 gem "sqlite3", "~> 2.8.0"
 gem "thruster", "~> 0.1.16", require: false
 gem "turbo-rails", "~> 2.0.20"
-gem "rack-attack", "~> 6.8.0"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 group :development, :test do
