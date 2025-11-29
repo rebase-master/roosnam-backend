@@ -3,11 +3,7 @@ class ClientReview < ApplicationRecord
   belongs_to :user
   validates :reviewer_name, presence: true
   validates :review_text, presence: true
-  validates :rating, numericality: {
-    only_integer: true,
-    greater_than_or_equal_to: 1,
-    less_than_or_equal_to: 5
-  }, allow_nil: true
+  validates :rating, inclusion: { in: 1..5, message: "must be in 1..5" }, allow_nil: true
 
   before_validation :set_default_user, on: :create
 
