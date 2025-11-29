@@ -66,4 +66,25 @@ class WorkExperienceTest < ActiveSupport::TestCase
     expected = "Senior Full Stack Developer at Unknown Company"
     assert_equal expected, @work_experience.custom_label
   end
+
+  # Duration Tests
+  test "duration_in_months should calculate months for ended position" do
+    @work_experience.start_date = Date.new(2020, 1, 1)
+    @work_experience.end_date = Date.new(2021, 1, 1)
+    assert_equal 12, @work_experience.duration_in_months
+  end
+
+  test "duration_in_months should use current date for ongoing position" do
+    @work_experience.start_date = Date.today - 6.months
+    @work_experience.end_date = nil
+    duration = @work_experience.duration_in_months
+    assert duration >= 6, "Duration should be at least 6 months"
+    assert duration <= 7, "Duration should be at most 7 months (accounting for partial months)"
+  end
+
+  test "duration_in_months should handle same month start and end" do
+    @work_experience.start_date = Date.new(2020, 5, 1)
+    @work_experience.end_date = Date.new(2020, 5, 31)
+    assert_equal 0, @work_experience.duration_in_months
+  end
 end

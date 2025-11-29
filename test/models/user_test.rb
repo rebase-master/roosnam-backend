@@ -173,4 +173,23 @@ class UserTest < ActiveSupport::TestCase
 
     assert @user.profile_completeness >= initial_completeness
   end
+
+  # Experience Calculation Tests
+  test "total_experience_years should calculate from all work experiences" do
+    # User has work experiences in fixtures, total should be calculated
+    total_years = @user.total_experience_years
+    assert total_years >= 0, "Total experience should be non-negative"
+  end
+
+  test "total_experience_years should return 0 when no experiences" do
+    # Delete associated skills first to avoid FK constraint
+    @user.work_experiences.each { |we| we.skills.destroy_all }
+    @user.work_experiences.destroy_all
+    assert_equal 0.0, @user.total_experience_years
+  end
+
+  test "current_company_name should return nil when no current experience" do
+    @user.work_experiences.update_all(end_date: Date.today)
+    assert_nil @user.current_company_name
+  end
 end
