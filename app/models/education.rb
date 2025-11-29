@@ -15,7 +15,10 @@ class Education < ApplicationRecord
   validates :degree_status, presence: true
   validates :field_of_study, presence: true
   validates :start_year, presence: true, numericality: { only_integer: true, greater_than: 1900, less_than_or_equal_to: 2100 }
-  validates :end_year, presence: true, numericality: { only_integer: true, greater_than: 1900, less_than_or_equal_to: 2100 }
+  validates :end_year,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 1900, less_than_or_equal_to: 2100 },
+            unless: -> { degree_status == 'now_attending' }
   validate :end_year_after_start_year
 
   # Method for rails_admin enum dropdown

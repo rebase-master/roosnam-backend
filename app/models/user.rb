@@ -7,8 +7,8 @@ class User < ApplicationRecord
   has_one_attached :profile_photo
   has_one_attached :resume
 
-  has_many :client_projects
-  has_many :client_reviews
+  has_many :client_projects, dependent: :destroy
+  has_many :client_reviews, dependent: :destroy
   # JSON serialization for TEXT columns (SQLite compatible)
   serialize :social_links, coder: JSON
   serialize :portfolio_settings, coder: JSON
