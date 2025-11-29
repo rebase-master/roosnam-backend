@@ -1,0 +1,15 @@
+aws_cert:
+  user: portfolio_user
+  title: AWS Certified Solutions Architect
+  issuer: Amazon Web Services
+  issue_date: <%= 1.year.ago.to_date %>
+  expiration_date: <%= 2.years.from_now.to_date %>
+  credential_url: https://aws.amazon.com/certification/verify/123456
+
+ruby_cert:
+  user: portfolio_user
+  title: Ruby Association Certified Ruby Programmer Gold
+  issuer: Ruby Association
+  issue_date: <%= 2.years.ago.to_date %>
+  expiration_date: null
+  credential_url: https://www.ruby.or.jp/en/certification/examination/

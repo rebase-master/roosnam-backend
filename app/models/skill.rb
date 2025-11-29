@@ -1,23 +1,14 @@
 class Skill < ApplicationRecord
   belongs_to :work_experience, optional: true
 
-  has_many :project_skills, dependent: :destroy
-  has_many :client_projects, through: :project_skills
-
   validates :name, presence: true
   validates :years_of_experience,
             numericality: { greater_than_or_equal_to: 0, less_than: 100 },
             allow_nil: true
   validates :proficiency_level,
-            inclusion: { in: %w[beginner intermediate advanced expert] },
-            allow_nil: true
+            inclusion: { in: %w[beginner intermediate advanced expert], allow_nil: true }
 
   before_validation :generate_slug, if: -> { name.present? && (slug.blank? || name_changed?) }
-
-  scope :by_proficiency, ->(level) { where(proficiency_level: level) }
-  scope :top_skills, ->(limit = 10) { order(years_of_experience: :desc).limit(limit) }
-
-  PROFICIENCY_LEVELS = %w[beginner intermediate advanced expert].freeze
 
   private
 
@@ -26,6 +17,7 @@ class Skill < ApplicationRecord
     candidate_slug = base_slug
     counter = 1
 
+    # Ensure uniqueness by appending a number if needed
     while Skill.where(slug: candidate_slug).where.not(id: id).exists?
       candidate_slug = "#{base_slug}-#{counter}"
       counter += 1

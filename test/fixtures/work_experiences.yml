@@ -1,0 +1,19 @@
+current_job:
+  user: portfolio_user
+  job_title: Senior Full Stack Developer
+  employer_name: Tech Corp Inc
+  start_date: <%= 2.years.ago.to_date %>
+  end_date: null
+  city: San Francisco
+  state: CA
+  country: USA
+
+previous_job:
+  user: portfolio_user
+  job_title: Full Stack Developer
+  employer_name: StartUp Co
+  start_date: <%= 5.years.ago.to_date %>
+  end_date: <%= 2.years.ago.to_date %>
+  city: New York
+  state: NY
+  country: USA

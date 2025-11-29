@@ -1,15 +1,15 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :recoverable, :rememberable, :validatable
 
-  has_many :work_experiences, dependent: :destroy
-  has_many :education, class_name: 'Education', dependent: :destroy
-  has_many :certifications, dependent: :destroy
-  has_many :client_projects, dependent: :destroy
-  has_many :client_reviews, dependent: :destroy
-
+  has_many :work_experiences, dependent: :nullify
+  has_many :education, class_name: 'Education', dependent: :nullify
+  has_many :certifications, dependent: :nullify
   has_one_attached :profile_photo
   has_one_attached :resume
 
+  has_many :client_projects
+  has_many :client_reviews
+  # JSON serialization for TEXT columns (SQLite compatible)
   serialize :social_links, coder: JSON
   serialize :portfolio_settings, coder: JSON
 
@@ -26,24 +26,31 @@ class User < ApplicationRecord
   before_save :calculate_profile_completeness
   after_initialize :set_default_json_fields
 
-  AVAILABILITY_STATUSES = %w[available open_to_opportunities not_available].freeze
-
+  # Current role/company from work_experiences table
   def current_experience
-    work_experiences.where(end_date: nil).order(start_date: :desc).first
+    work_experiences
+      .where(end_date: nil)
+      .order(start_date: :desc)
+      .first
   end
 
   def current_role
-    current_experience&.job_title
+    current_experience&.job_title  # Changed from .title
   end
 
   def current_company_name
-    current_experience&.employer_name
+    exp = current_experience
+    return nil unless exp
+
+    # Company association doesn't exist, just use employer_name
+    exp.employer_name
   end
 
   def display_name
     super.presence || full_name
   end
 
+  # Portfolio setting helpers
   def show_email?
     portfolio_settings&.dig('show_email') != false
   end

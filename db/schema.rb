@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_28_093208) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_28_100954) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -67,6 +67,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_28_093208) do
     t.index ["user_id"], name: "index_client_projects_on_user_id"
   end
 
+  create_table "client_projects_skills", id: false, force: :cascade do |t|
+    t.integer "client_project_id", null: false
+    t.integer "skill_id", null: false
+  end
+
   create_table "client_reviews", force: :cascade do |t|
     t.integer "client_project_id", null: false
     t.datetime "created_at", null: false
@@ -92,16 +97,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_28_093208) do
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_education_on_user_id"
-  end
-
-  create_table "project_skills", force: :cascade do |t|
-    t.integer "client_project_id", null: false
-    t.datetime "created_at", null: false
-    t.integer "skill_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["client_project_id", "skill_id"], name: "index_project_skills_on_client_project_id_and_skill_id", unique: true
-    t.index ["client_project_id"], name: "index_project_skills_on_client_project_id"
-    t.index ["skill_id"], name: "index_project_skills_on_skill_id"
   end
 
   create_table "skills", force: :cascade do |t|
@@ -168,8 +163,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_28_093208) do
   add_foreign_key "client_reviews", "client_projects"
   add_foreign_key "client_reviews", "users"
   add_foreign_key "education", "users"
-  add_foreign_key "project_skills", "client_projects"
-  add_foreign_key "project_skills", "skills"
   add_foreign_key "skills", "work_experiences"
   add_foreign_key "work_experiences", "users"
 end

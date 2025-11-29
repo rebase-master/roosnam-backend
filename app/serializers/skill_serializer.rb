@@ -1,19 +1,8 @@
 class SkillSerializer < ActiveModel::Serializer
-  attributes :id, :name, :slug, :proficiency_level, :years_of_experience
+  attributes :id, :name, :slug, :proficiency_level, :years_of_experience, :source_company
 
-  def proficiency_level
-    object.proficiency_level || infer_proficiency
-  end
-
-  private
-
-  def infer_proficiency
-    years = object.years_of_experience || 0
-    case years
-    when 0..1 then 'beginner'
-    when 1..3 then 'intermediate'
-    when 3..6 then 'advanced'
-    else 'expert'
-    end
+  def source_company
+    # This attribute is dynamically added by the SQL query in SkillsController
+    object.try(:source_company) || object.work_experience&.employer_name
   end
 end

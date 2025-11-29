@@ -15,7 +15,6 @@ gem "sprockets-rails", "~> 3.5.2"
 gem "sqlite3", "~> 2.8.0"
 gem "thruster", "~> 0.1.16", require: false
 gem "turbo-rails", "~> 2.0.20"
-gem "rack-attack", "~> 6.8.0"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 group :development, :test do
@@ -33,4 +32,5 @@ group :test do
   gem "capybara", "~> 3.40.0"
   gem "minitest", "~> 5.26.1"
   gem "selenium-webdriver", "~> 4.38.0"
+  gem "simplecov", "~> 0.22.0", require: false
 end

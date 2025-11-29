@@ -1,0 +1,17 @@
+bachelor:
+  user: portfolio_user
+  school_name: University of California
+  degree: Bachelor of Science
+  field_of_study: Computer Science
+  degree_status: graduated
+  start_year: 2010
+  end_year: 2014
+
+master:
+  user: portfolio_user
+  school_name: Stanford University
+  degree: Master of Science
+  field_of_study: Software Engineering
+  degree_status: graduated
+  start_year: 2014
+  end_year: 2016
