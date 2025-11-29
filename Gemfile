@@ -15,6 +15,7 @@ gem "sprockets-rails", "~> 3.5.2"
 gem "sqlite3", "~> 2.8.0"
 gem "thruster", "~> 0.1.16", require: false
 gem "turbo-rails", "~> 2.0.20"
+gem "rack-attack", "~> 6.8.0"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 group :development, :test do
