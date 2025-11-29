@@ -18,6 +18,8 @@ class User < ApplicationRecord
   validate :prevent_admin_demotion, on: :update
 
   validates :full_name, presence: true, if: :profile_fields_present?
+  validates :full_name, length: { maximum: 60, message: "must be 60 characters or less" }, allow_nil: true
+  validates :display_name, length: { maximum: 60, message: "must be 60 characters or less" }, allow_nil: true
   validates :availability_status,
             inclusion: { in: %w[available open_to_opportunities not_available] },
             allow_nil: true

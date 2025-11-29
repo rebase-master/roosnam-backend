@@ -10,6 +10,9 @@ RailsAdmin.config do |config|
     redirect_to main_app.root_path unless current_user&.respond_to?(:admin?) && current_user.admin?
   end
 
+  # Re-authenticate user after updating their own record (prevents logout)
+  config.parent_controller = 'ApplicationController'
+
   # Configure actions - disable create and delete for User model (singleton pattern)
   config.actions do
     dashboard
