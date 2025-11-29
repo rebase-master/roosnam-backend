@@ -1,6 +1,15 @@
 require "test_helper"
 
 class Api::V1::BaseControllerTest < ActionDispatch::IntegrationTest
+  def setup
+    # Clear rack-attack cache to avoid rate limiting
+    Rack::Attack.cache.store.clear
+  end
+
+  def teardown
+    Rack::Attack.cache.store.clear
+  end
+
   # Test error handling by using the profile endpoint
   # since it inherits from BaseController
 
