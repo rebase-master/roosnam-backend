@@ -8,7 +8,6 @@ class ClientReview < ApplicationRecord
     greater_than_or_equal_to: 1,
     less_than_or_equal_to: 5
   }, allow_nil: true
-  validates :reviewer_name, presence: true
 
   before_validation :set_default_user, on: :create
 

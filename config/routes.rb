@@ -11,7 +11,6 @@ Rails.application.routes.draw do
       resources :certifications, only: [:index]
       resources :skills, only: [:index]
       resources :education, only: [:index]
-      resources :skills, only: [:index]
     end
   end
 
