@@ -1,0 +1,34 @@
+<nav class="ra-sidebar" aria-label="Admin navigation">
+  <% if admin_static_links.any? %>
+    <div class="ra-sidebar__section">
+      <p class="ra-sidebar__label"><%= RailsAdmin::Config.navigation_static_label || 'Portfolio' %></p>
+      <ul class="ra-sidebar__list">
+        <% admin_static_links.each do |link| %>
+          <li class="ra-sidebar__item">
+            <%= link_to link[:url], class: "ra-sidebar__link" do %>
+              <i class="fa fa-user-circle"></i>
+              <span><%= link[:label] %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% admin_nav_sections.each do |section| %>
+    <div class="ra-sidebar__section">
+      <p class="ra-sidebar__label"><%= section[:label] %></p>
+      <ul class="ra-sidebar__list">
+        <% section[:items].each do |item| %>
+          <li class="ra-sidebar__item <%= 'is-active' if item[:active] %>">
+            <%= link_to item[:path], class: "ra-sidebar__link #{'active' if item[:active]}" do %>
+              <i class="fa <%= item[:icon] %>"></i>
+              <span><%= item[:label] %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</nav>
+

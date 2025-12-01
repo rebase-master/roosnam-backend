@@ -1,0 +1,10 @@
+en:
+  admin:
+    actions:
+      edit:
+        # Override default title to drop the object label (\"'User #1'\", etc.)
+        # This will render headers like \"Edit Portfolio Owner\" instead of
+        # \"Edit Portfolio Owner 'User #1'\".
+        title: "Edit %{model_label}"
+
+

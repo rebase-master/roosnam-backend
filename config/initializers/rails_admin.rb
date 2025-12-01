@@ -44,9 +44,20 @@ RailsAdmin.config do |config|
     navigation_label 'Portfolio'
     label 'Portfolio Owner'
     label_plural 'Portfolio Owner'
-    
+
     # Hide from main navigation menu (correct syntax per RailsAdmin docs)
     visible false
+
+    # Configure virtual attributes for social links and portfolio settings
+    configure :linkedin_url, :string
+    configure :github_url, :string
+    configure :twitter_url, :string
+    configure :website_url, :string
+    configure :setting_show_email, :boolean
+    configure :setting_show_phone, :boolean
+    configure :setting_theme_preference, :enum do
+      enum { ['light', 'dark'] }
+    end
 
     # Customize list view - limit to 1 item
     list do
@@ -59,7 +70,13 @@ RailsAdmin.config do |config|
                      :reset_password_token, :social_links, :portfolio_settings
       
       # Show only essential fields  
-      fields :id, :email, :full_name, :display_name, :admin, :created_at, :updated_at
+      fields :id, :email, :full_name, :display_name, :availability_status, :admin, :created_at, :updated_at
+
+      field :availability_status do
+        pretty_value do
+          bindings[:view].availability_badge(value)
+        end
+      end
     end
 
     # Customize show view (details page)
@@ -71,8 +88,8 @@ RailsAdmin.config do |config|
       
       # Format availability_status in title case
       field :availability_status do
-        formatted_value do
-          value.present? ? value.humanize : ''
+        pretty_value do
+          bindings[:view].availability_badge(value)
         end
       end
       
@@ -111,15 +128,18 @@ RailsAdmin.config do |config|
     edit do
       exclude_fields :admin, :encrypted_password, :reset_password_token, :remember_created_at,
                      :reset_password_sent_at, :work_experiences, :education, 
-                     :certifications, :attachments
+                     :certifications, :attachments, :profile_completeness, :client_projects, :client_reviews,
+                     :social_links, :portfolio_settings
 
       group :personal do
         label 'Personal Information'
         field :full_name
         field :display_name do
-          help 'Optional: If empty, full_name will be used'
+          help 'Optional: If empty, full name will be used'
         end
-        field :email
+        field :profile_photo do
+          help 'Upload your profile photo'
+        end
         field :phone
         field :location do
           help 'Format: "City, Country"'
@@ -128,7 +148,7 @@ RailsAdmin.config do |config|
       end
 
       group :professional do
-        label 'Professional Information'
+        label 'Professional Summary'
         field :headline do
           help 'e.g., "Senior Full Stack Developer"'
         end
@@ -138,20 +158,69 @@ RailsAdmin.config do |config|
         field :tagline do
           help 'Short catchy phrase'
         end
-        field :years_of_experience
-        field :availability_status, :enum do
-          enum ['available', 'open_to_opportunities', 'not_available']
-          help 'Your current availability for work'
+      end
+
+      group :resume_upload do
+        label 'Resume / CV'
+        field :resume do
+          help 'Upload your resume/CV (PDF, DOC, DOCX)'
+        end
+      end
+
+      group :work_details do
+        label 'Work Details'
+        field :years_of_experience do
+          help 'Total years of professional experience'
         end
         field :hourly_rate do
           help 'Format: "USD 75/hr" or "€60/hr"'
+        end
+        field :availability_status, :enum do
+          label 'Availability status'
+
+          enum do
+            [
+              ['Available for work', 'available'],
+              ['Open to opportunities', 'open_to_opportunities'],
+              ['Not available', 'not_available']
+            ]
+          end
+
+          pretty_value do
+            case value
+            when 'available' then 'Available for work'
+            when 'open_to_opportunities' then 'Open to opportunities'
+            when 'not_available' then 'Not available'
+            else
+              value.to_s.humanize
+            end
+          end
+
+          help 'Your current availability for work'
         end
       end
 
       group :social do
         label 'Social Links'
-        field :social_links, :json do
-          help 'JSON format: {"linkedin": "url", "github": "url", "twitter": "url", ...}'
+        field :linkedin_url, :string do
+          label 'LinkedIn URL'
+          help 'Your LinkedIn profile URL'
+          visible true
+        end
+        field :github_url, :string do
+          label 'GitHub URL'
+          help 'Your GitHub profile URL'
+          visible true
+        end
+        field :twitter_url, :string do
+          label 'Twitter/X URL'
+          help 'Your Twitter/X profile URL'
+          visible true
+        end
+        field :website_url, :string do
+          label 'Website URL'
+          help 'Your personal website URL'
+          visible true
         end
       end
 
@@ -167,18 +236,50 @@ RailsAdmin.config do |config|
 
       group :settings do
         label 'Portfolio Settings'
-        field :portfolio_settings, :json do
-          help 'JSON format: {"show_email": true, "show_phone": false, "theme_preference": "light"}'
+        field :setting_show_email, :boolean do
+          label 'Show Email'
+          help 'Display your email on the public portfolio'
+        end
+        field :setting_show_phone, :boolean do
+          label 'Show Phone'
+          help 'Display your phone number on the public portfolio'
+        end
+        field :setting_theme_preference, :enum do
+          label 'Theme Preference'
+
+          enum do
+            [
+              ['Light', 'light'],
+              ['Dark', 'dark']
+            ]
+          end
+
+          pretty_value do
+            case value
+            when 'light' then 'Light'
+            when 'dark' then 'Dark'
+            else
+              value.to_s.humanize
+            end
+          end
+
+          help 'Choose the default theme for your portfolio'
         end
       end
 
-      group :metadata do
-        label 'Metadata'
-        field :profile_completeness do
-          read_only true
-          help 'Calculated automatically based on filled fields'
+      group :account do
+        label 'Account Settings'
+        field :email do
+          help 'Your login email address'
+        end
+        field :password do
+          help 'Leave blank to keep current password'
+        end
+        field :password_confirmation do
+          help 'Confirm your new password'
         end
       end
+
     end
   end
 
@@ -252,7 +353,18 @@ RailsAdmin.config do |config|
         help 'Automatically generated from name'
       end
       field :proficiency_level, :enum do
-        enum ['beginner', 'intermediate', 'advanced', 'expert']
+        enum do
+          [
+            ['Beginner', 'beginner'],
+            ['Intermediate', 'intermediate'],
+            ['Advanced', 'advanced'],
+            ['Expert', 'expert']
+          ]
+        end
+
+        pretty_value do
+          value.to_s.humanize
+        end
       end
       field :years_of_experience do
         help 'Years of experience with this skill (e.g., 2.5)'
@@ -269,7 +381,18 @@ RailsAdmin.config do |config|
         required true
       end
       field :proficiency_level, :enum do
-        enum ['beginner', 'intermediate', 'advanced', 'expert']
+        enum do
+          [
+            ['Beginner', 'beginner'],
+            ['Intermediate', 'intermediate'],
+            ['Advanced', 'advanced'],
+            ['Expert', 'expert']
+          ]
+        end
+
+        pretty_value do
+          value.to_s.humanize
+        end
       end
       field :years_of_experience do
         help 'Years of experience with this skill (e.g., 2.5)'
@@ -356,6 +479,12 @@ RailsAdmin.config do |config|
 
     list do
       fields :id, :reviewer_name, :reviewer_company, :rating, :client_project, :created_at
+
+      field :rating do
+        pretty_value do
+          bindings[:view].rating_badge(value)
+        end
+      end
     end
 
     show do

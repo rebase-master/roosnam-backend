@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users, skip: [:registrations]
 
+  match '/_next/*path', to: proc { [204, {'Content-Type' => 'text/plain'}, ['']] }, via: :all
+
   namespace :api do
     namespace :v1 do
       resource :profile, only: [:show], controller: 'profile'

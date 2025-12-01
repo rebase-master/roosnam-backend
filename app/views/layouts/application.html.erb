@@ -20,9 +20,10 @@
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app %>
+    <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="<%= content_for?(:body_class) ? yield(:body_class) : '' %>">
     <div class="container">
       <%= yield %>
     </div>

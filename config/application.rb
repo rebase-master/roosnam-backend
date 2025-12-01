@@ -26,5 +26,10 @@ module RoosnamBackend
 
     # Enable Rack::Attack middleware for rate limiting
     config.middleware.use Rack::Attack
+
+    # Public frontend base URL (used by RailsAdmin "View Site" link)
+    # Defaults to local Next.js dev server, can be overridden per environment:
+    #   FRONTEND_URL=https://your-domain.com
+    config.x.frontend_base_url = ENV.fetch("FRONTEND_URL", "http://localhost:3001")
   end
 end

@@ -1,0 +1,125 @@
+<% metrics = Admin::Metrics.new %>
+<% user = User.first %>
+<% profile_completeness = user&.profile_completeness || 0 %>
+<% completeness_class =
+     if profile_completeness == 100
+       'ra-profile-completeness--success'
+     elsif profile_completeness >= 40
+       'ra-profile-completeness--warning'
+     else
+       'ra-profile-completeness--danger'
+     end %>
+
+<div class="container-fluid ra-dashboard">
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="ra-card ra-profile-completeness <%= completeness_class %>">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <p class="ra-card__eyebrow mb-1">Profile Status</p>
+            <h4 class="mb-0">Profile Completeness: <%= profile_completeness %>%</h4>
+          </div>
+          <div class="ra-profile-progress">
+            <div class="progress" style="width: 200px; height: 12px;">
+              <div class="progress-bar" role="progressbar" style="width: <%= profile_completeness %>%" aria-valuenow="<%= profile_completeness %>" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <% metrics.stat_cards.each do |card| %>
+      <div class="col-12 col-sm-6 col-xl-3">
+        <div class="ra-card ra-stat-card">
+          <div class="ra-stat-card__icon">
+            <i class="fa <%= card[:icon] %>"></i>
+          </div>
+          <div class="ra-stat-card__body">
+            <p class="ra-stat-card__label"><%= card[:label] %></p>
+            <h3 class="ra-stat-card__value"><%= card[:value] %></h3>
+            <p class="ra-stat-card__caption"><%= card[:caption] %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="row g-4 mb-4 align-items-stretch">
+    <div class="col-12 col-xl-8">
+      <div class="ra-card ra-chart-card">
+        <div class="ra-card__header">
+          <p class="ra-card__eyebrow">Velocity</p>
+          <h4>Content cadence (past 8 weeks)</h4>
+        </div>
+        <% activity_series = metrics.weekly_activity %>
+        <% if activity_series.values.all?(&:blank?) %>
+          <p class="text-muted mb-0">Add a work experience or project to start tracking momentum.</p>
+        <% else %>
+          <%= line_chart activity_series,
+            height: '260px',
+            colors: ['#2563eb', '#14b8a6'],
+            library: {
+              legend: { position: 'bottom' },
+              scales: { y: { beginAtZero: true } },
+            } %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div class="ra-card ra-chart-card">
+        <div class="ra-card__header">
+          <p class="ra-card__eyebrow">Skill mix</p>
+          <h4>Proficiency distribution</h4>
+        </div>
+        <% skill_mix = metrics.skill_mix %>
+        <% if skill_mix.blank? %>
+          <p class="text-muted mb-0">Tag at least one skill with a proficiency level to populate this chart.</p>
+        <% else %>
+          <%= column_chart skill_mix,
+            height: '260px',
+            colors: ['#3b82f6'],
+            library: { plugins: { legend: { display: false } } } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="ra-card ra-recent-card">
+        <div class="ra-card__header">
+          <p class="ra-card__eyebrow">Activity</p>
+          <h4>Recently updated</h4>
+        </div>
+        <% recent_updates = metrics.recent_updates %>
+        <% if recent_updates.blank? %>
+          <p class="text-muted mb-0">No records updated yet. Start by adding a work experience or project.</p>
+        <% else %>
+          <ul class="ra-recent-list">
+            <% recent_updates.each do |entry| %>
+              <% abstract_model = RailsAdmin::AbstractModel.new(entry[:model]) %>
+              <% edit_path = rails_admin.url_for(action: :edit, controller: 'rails_admin/main', model_name: abstract_model.to_param, id: entry[:record].id) %>
+              <li class="ra-recent-list__item">
+                <div>
+                  <%= link_to entry[:label], edit_path, class: "ra-recent-list__title" %>
+                  <p class="ra-recent-list__meta">
+                    <span><%= entry[:model].model_name.human %></span>
+                    <span>•</span>
+                    <span><%= time_ago_in_words(entry[:updated_at]) %> ago</span>
+                  </p>
+                </div>
+                <a href="<%= edit_path %>" class="btn btn-sm btn-outline-primary">
+                  Manage
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
