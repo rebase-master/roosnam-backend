@@ -1,0 +1,645 @@
+@import 'rails_admin/custom/variables';
+
+body.rails_admin {
+  margin: 0;
+  font-family: $font-family-primary;
+  background-color: $color-gray-50;
+  color: $color-gray-900;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.ra-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  padding: $spacing-sm $spacing-lg;
+  margin: 0;
+}
+
+.ra-shell {
+  padding: $spacing-lg $spacing-md $spacing-xl;
+}
+
+.ra-shell__sidebar {
+  position: sticky;
+  top: $spacing-xl;
+}
+
+.ra-shell__content {
+  padding-top: $spacing-md;
+}
+
+.ra-content {
+  padding: $spacing-md;
+}
+
+.rails_admin {
+  .ra-topbar {
+    background: transparent;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+  }
+
+  .ra-brand {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    &__title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: $color-gray-900;
+      text-decoration: none;
+
+      small {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: $color-gray-500;
+        margin-left: $spacing-xxs;
+      }
+    }
+  }
+
+  .ra-env-badge {
+    background: $color-gray-100;
+    color: $color-gray-600;
+    font-size: 0.75rem;
+  }
+
+  .ra-topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+
+    .btn-secondary {
+      background: $color-gray-100;
+      color: $color-gray-700;
+      border: none;
+
+      &:hover {
+        background: $color-primary-50;
+        color: $color-primary-700;
+      }
+    }
+  }
+
+  .ra-topbar__user {
+    color: $color-gray-600;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: $spacing-xxs;
+  }
+
+  .ra-sidebar {
+    position: sticky;
+    top: $spacing-xl;
+    background: #fff;
+    border-radius: $radius-lg;
+    padding: $spacing-lg $spacing-md;
+    margin: $spacing-lg $spacing-md;
+    box-shadow: $shadow-soft;
+    height: calc(100vh - #{2 * $spacing-lg});
+    overflow-y: auto;
+  }
+
+  .ra-sidebar__section + .ra-sidebar__section {
+    margin-top: $spacing-lg;
+  }
+
+  .ra-sidebar__label {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    color: $color-gray-500;
+    margin-bottom: $spacing-sm;
+  }
+
+  .ra-sidebar__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ra-sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    color: $color-gray-700;
+    font-weight: 500;
+    transition: background-color $transition-base, color $transition-base;
+
+    .fa {
+      width: 20px;
+      text-align: center;
+      color: $color-gray-500;
+    }
+  }
+
+  .ra-sidebar__link.active,
+  .ra-sidebar__link:hover {
+    background: $color-primary-50;
+    color: $color-primary-700;
+
+    .fa {
+      color: $color-primary-600;
+    }
+  }
+
+  .ra-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $color-gray-900;
+    margin-bottom: $spacing-md;
+  }
+
+  .ra-card,
+  .dashboard .row-fluid [class*='span'] {
+    background: #fff;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-soft;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+  }
+
+  .ra-chart-card,
+  .ra-recent-card {
+    margin-bottom: $spacing-lg;
+  }
+
+  .ra-profile-completeness {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1px solid #fcd34d;
+
+    .progress {
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 999px;
+      overflow: hidden;
+
+      .progress-bar {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        transition: width 0.6s ease;
+      }
+    }
+  }
+
+  // Profile completeness states
+  .ra-profile-completeness--success {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border-color: #22c55e;
+
+    .progress-bar {
+      background: linear-gradient(90deg, #16a34a, #15803d);
+    }
+  }
+
+  .ra-profile-completeness--warning {
+    // uses base yellow styling above
+  }
+
+  .ra-profile-completeness--danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-color: #ef4444;
+
+    .progress-bar {
+      background: linear-gradient(90deg, #dc2626, #b91c1c);
+    }
+  }
+
+  .ra-filter-card {
+    background: #fff;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-soft;
+    border: none;
+
+    .btn {
+      border-radius: $radius-md;
+    }
+  }
+
+  .ra-scope-tabs {
+    margin: 0 0 $spacing-md;
+    border-bottom: none;
+    gap: $spacing-xs;
+
+    .nav-link {
+      border-radius: 999px;
+      padding: $spacing-xxs $spacing-md;
+      color: $color-gray-600;
+      border: 1px solid transparent;
+      transition: all $transition-base;
+    }
+
+    .nav-link.active {
+      background: $color-primary-50;
+      border-color: $color-primary-200;
+      color: $color-primary-700;
+    }
+  }
+
+  .ra-table-wrapper {
+    background: #fff;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-soft;
+    padding: $spacing-sm;
+  }
+
+  .table {
+    background: transparent;
+    border-radius: $radius-lg;
+    overflow: hidden;
+
+    thead th {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: $color-gray-500;
+      background: $color-gray-100;
+      border: none;
+      padding: $spacing-sm $spacing-md;
+    }
+
+    tbody td {
+      border-color: $color-gray-100;
+      padding: $spacing-md;
+      vertical-align: middle;
+      color: $color-gray-700;
+    }
+
+    tbody tr {
+      transition: background-color $transition-base;
+
+      &:nth-child(even) {
+        background-color: $color-gray-50;
+      }
+
+      &:hover {
+        background-color: $color-primary-50;
+      }
+    }
+  }
+
+  .badge {
+    border-radius: 999px;
+    padding: $spacing-xxs $spacing-sm;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.badge-primary {
+      background: $color-primary-50;
+      color: $color-primary-700;
+    }
+
+    &.badge-accent {
+      background: $color-accent-100;
+      color: $color-accent-600;
+    }
+
+    &.badge-muted {
+      background: $color-gray-100;
+      color: $color-gray-700;
+    }
+  }
+
+  .flash,
+  #flash_alert,
+  #flash_notice {
+    border-radius: $radius-md;
+    border: none;
+    padding: $spacing-md;
+    font-weight: 500;
+    margin-bottom: $spacing-md;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    box-shadow: $shadow-soft;
+  }
+
+  #flash_notice {
+    background: lighten($color-accent-100, 5%);
+    color: $color-accent-600;
+  }
+
+  #flash_alert,
+  #flash_error {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  .btn,
+  .btn-primary {
+    border-radius: $radius-md;
+    font-weight: 600;
+    padding: $spacing-sm $spacing-lg;
+    border: none;
+    transition: transform $transition-base, box-shadow $transition-base;
+    box-shadow: none;
+  }
+
+  .btn-primary,
+  .btn-info {
+    background: $color-primary-600;
+    color: #fff;
+
+    &:hover {
+      background: $color-primary-700;
+      transform: translateY(-1px);
+      box-shadow: $shadow-soft;
+    }
+  }
+
+  .btn-danger {
+    background: #dc2626;
+    color: #fff;
+  }
+
+  // Old fieldset styles removed - using the ones below
+
+  .control-group {
+    background: #fff;
+    border-radius: $radius-lg;
+    padding: $spacing-md $spacing-lg;
+    margin-bottom: $spacing-md;
+    box-shadow: $shadow-soft;
+
+    label {
+      font-weight: 600;
+      color: $color-gray-700;
+      margin-bottom: $spacing-xs;
+    }
+
+    .help-inline,
+    .help-block,
+    .form-text {
+      color: $color-gray-500;
+      font-size: 0.85rem;
+    }
+  }
+
+  .form-actions {
+    background: transparent;
+    border-top: none;
+    padding: $spacing-lg 0 0;
+  }
+
+  // Global select / dropdown styling (Select2 + native selects)
+  select.form-control {
+    border-radius: $radius-md;
+    border: 1px solid $color-gray-300;
+    padding: $spacing-sm $spacing-md;
+    font-size: 0.95rem;
+    color: $color-gray-900;
+    box-shadow: none;
+    background-color: #fff;
+
+    &:focus {
+      outline: none;
+      border-color: $color-primary-500;
+      box-shadow: 0 0 0 3px rgba($color-primary-500, 0.15);
+    }
+  }
+
+  // Select2 single-select styling
+  .select2-container--default .select2-selection--single {
+    border-radius: $radius-md;
+    border: 1px solid $color-gray-300;
+    height: 44px;
+    padding: 0 $spacing-md;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: none;
+
+    .select2-selection__rendered {
+      padding: 0;
+      line-height: 1.4;
+      color: $color-gray-900;
+      font-size: 0.95rem;
+    }
+
+    .select2-selection__arrow {
+      height: 100%;
+      right: $spacing-sm;
+    }
+  }
+
+  .select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: $color-primary-500;
+    box-shadow: 0 0 0 3px rgba($color-primary-500, 0.15);
+  }
+
+  .select2-dropdown {
+    border-radius: $radius-md;
+    border-color: $color-gray-300;
+    box-shadow: $shadow-soft-lg;
+    overflow: hidden;
+  }
+
+  .select2-results__option {
+    padding: $spacing-sm $spacing-md;
+    font-size: 0.95rem;
+
+    &.select2-results__option--highlighted {
+      background-color: $color-primary-50;
+      color: $color-primary-700;
+    }
+  }
+
+  .ra-list {
+    gap: $spacing-md;
+    display: flex;
+    flex-direction: column;
+  }
+
+  fieldset {
+    border: none;
+    background: #fff;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+    box-shadow: $shadow-soft;
+    overflow: visible;
+
+    legend {
+      font-size: 1rem;
+      font-weight: 600;
+      color: $color-gray-800;
+      margin-bottom: $spacing-md;
+      display: block;
+      cursor: default;
+
+      i.fas.fa-chevron-right,
+      i.fas.fa-chevron-down {
+        display: none;
+      }
+    }
+  }
+
+  .ra-dashboard {
+    .ra-card {
+      height: 100%;
+    }
+  }
+
+  .ra-card__header {
+    margin-bottom: $spacing-sm;
+
+    h4 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+  }
+
+  .ra-card__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    color: $color-gray-500;
+    margin-bottom: $spacing-xxs;
+  }
+
+  .ra-stat-card {
+    display: flex;
+    gap: $spacing-md;
+    align-items: center;
+  }
+
+  .ra-stat-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: $color-primary-50;
+    color: $color-primary-600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+  .ra-stat-card__label {
+    margin: 0;
+    font-size: 0.85rem;
+    color: $color-gray-500;
+  }
+
+  .ra-stat-card__value {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $color-gray-900;
+  }
+
+  .ra-stat-card__caption {
+    margin: 0;
+    color: $color-gray-500;
+    font-size: 0.85rem;
+  }
+
+  .ra-recent-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-sm 0;
+      border-bottom: 1px solid $color-gray-100;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    &__title {
+      font-weight: 600;
+      color: $color-gray-900;
+      text-decoration: none;
+
+      &:hover {
+        color: $color-primary-600;
+      }
+    }
+
+    &__meta {
+      margin: 0;
+      color: $color-gray-500;
+      font-size: 0.85rem;
+      display: flex;
+      gap: $spacing-xxs;
+    }
+  }
+
+  // Inline field grouping for professional section
+  // Work details section - display fields in a row on larger screens
+  fieldset[id*="work_details"] {
+    .control-group {
+      @media (min-width: 768px) {
+        display: inline-block;
+        vertical-align: top;
+        width: calc(33.333% - #{$spacing-md});
+        margin-right: $spacing-md;
+
+        &:last-of-type {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  // Resume upload section - make it visually distinct
+  fieldset[id*="resume_upload"] {
+    background: linear-gradient(135deg, $color-gray-50 0%, #fff 100%);
+    border: 2px dashed $color-gray-300;
+
+    legend {
+      color: $color-primary-700;
+    }
+
+    .control-group {
+      text-align: center;
+      padding: $spacing-md 0;
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $spacing-sm;
+      }
+    }
+  }
+
+  // Toggle switch styling for boolean fields
+  .boolean-field {
+    .form-check-input {
+      width: 3rem;
+      height: 1.5rem;
+      cursor: pointer;
+      background-color: $color-gray-300;
+      border: none;
+      border-radius: 999px;
+      transition: background-color $transition-base;
+
+      &:checked {
+        background-color: $color-primary-600;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba($color-primary-600, 0.25);
+      }
+    }
+  }
+}
+

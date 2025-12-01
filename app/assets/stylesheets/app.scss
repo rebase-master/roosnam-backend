@@ -9,4 +9,75 @@
  * Consider organizing styles into separate files for maintainability.
  */
 @import "bootstrap";
+@import "font-awesome";
 @import "rails_admin/custom/theming";
+
+body.auth-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #2563eb 0%, #1d4ed8 40%, #0f172a 100%);
+  color: #0f172a;
+  padding: 1.5rem;
+}
+
+body.auth-body .container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-card {
+  background: #fff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.25);
+  padding: 2.5rem;
+}
+
+.auth-card__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.auth-card__title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.auth-card form .form-control {
+  border-radius: 0.85rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid #e2e8f0;
+  font-size: 1rem;
+}
+
+.auth-card form .form-control:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.2);
+}
+
+.auth-card .form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-card .btn-primary {
+  width: 100%;
+  border-radius: 0.85rem;
+  padding: 0.9rem 1.2rem;
+  font-weight: 600;
+  box-shadow: 0 15px 30px rgba(37, 99, 235, 0.35);
+}
+
+.auth-card__links {
+  text-align: center;
+  margin-top: 1.25rem;
+}

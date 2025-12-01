@@ -5,7 +5,12 @@ gem "active_storage_validations", "~> 3.0.2"
 gem "bootsnap", "~> 1.18.6", require: false
 gem "bootstrap", "~> 5.3.5"
 gem "devise", "~> 4.9.4"
+gem "font-awesome-sass", "~> 6.5.2"
+gem "importmap-rails", "~> 2.0"
 gem "kamal", "~> 2.8.2", require: false
+gem "chartkick", "~> 5.1"
+gem "groupdate", "~> 6.4"
+gem "stimulus-rails", "~> 1.3"
 gem "puma", "~> 7.1.0"
 gem "rack-attack", "~> 6.8.0"
 gem "rack-cors", "~> 3.0.0"

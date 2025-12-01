@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>" style="scroll-padding-top: 0;">
+  <head>
+    <%= render "layouts/rails_admin/head" %>
+    <style>
+      html, body { margin: 0; padding: 0; }
+    </style>
+  </head>
+  <body class="rails_admin" style="margin: 0; padding: 0;">
+    <div data-i18n-options="<%= I18n.t("admin.js").to_json %>" id="admin-js"></div>
+    <div class="badge bg-warning" id="loading" style="display:none; position:fixed; right:20px; bottom:20px; z-index:100000">
+      <%= t('admin.loading') %>
+    </div>
+
+    <header class="ra-navbar">
+      <%= render "layouts/rails_admin/navigation" %>
+    </header>
+
+    <div class="ra-shell container-fluid">
+      <div class="row">
+        <aside class="col-xl-2 col-lg-3 col-md-4 ra-shell__sidebar">
+          <%= render "layouts/rails_admin/sidebar_navigation" %>
+        </aside>
+        <main class="col-xl-10 col-lg-9 col-md-8 ra-shell__content">
+          <div class="container-fluid ra-content">
+            <%= render template: 'layouts/rails_admin/content' %>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
+
