@@ -12,6 +12,24 @@ class Skill < ApplicationRecord
 
   before_validation :generate_slug, if: -> { name.present? && (slug.blank? || name_changed?) }
 
+  # Scope to get all skills associated with a user's work experiences or client projects
+  # Returns distinct skills with source_company from work experiences
+  scope :for_portfolio_user, lambda { |user_id|
+    left_joins(:work_experience)
+      .joins(<<~SQL.squish)
+        LEFT JOIN project_skills
+          ON project_skills.skill_id = skills.id
+        LEFT JOIN client_projects
+          ON client_projects.id = project_skills.client_project_id
+      SQL
+      .where(<<~SQL.squish, user_id: user_id)
+        work_experiences.user_id = :user_id
+        OR client_projects.user_id = :user_id
+      SQL
+      .select('DISTINCT skills.*, work_experiences.employer_name AS source_company')
+      .order(Arel.sql('skills.years_of_experience DESC NULLS LAST'), :name)
+  }
+
   private
 
   def generate_slug
