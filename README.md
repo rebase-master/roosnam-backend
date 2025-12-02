@@ -12,7 +12,7 @@ Rails 8.1 API backend for the Roosnam portfolio platform with SQLite database.
 - Single-user (singleton) mode with automatic admin enforcement
 - CORS enabled for Next.js frontend
 - SQLite database (file-based, no external DB required)
-- Background job support (Sidekiq) for future AI integrations
+- Background jobs via Rails Active Job (async adapter by default), with room to add Sidekiq later if needed
 
 ## Setup
 
@@ -132,16 +132,30 @@ The project includes a Dockerfile for containerized deployment. For production d
 
 ### Required Environment Variables
 ```bash
-ADMIN_EMAIL=your-email@example.com
-ADMIN_PASSWORD=your-secure-password
+ADMIN_EMAIL=your-email@example.com          # required in production
+ADMIN_PASSWORD=your-secure-password        # required in production (12+ chars)
 SECRET_KEY_BASE=generate-with-rails-secret
+RAILS_MASTER_KEY=your-master-key
+CORS_ORIGINS=https://your-frontend-domain  # required in production
+FRONTEND_ORIGIN=https://your-frontend-domain
+REDIS_URL=redis://your-redis-host:6379     # used by rack-attack in production
+CSP_REPORT_ONLY=false                      # optional: enforce CSP instead of report-only
 ```
 
 ### Additional Considerations
 1. Configure CORS to allow only your domain in `config/initializers/cors.rb`
 2. Run `rails db:seed` on first deployment to create the admin user
 3. Consider using PostgreSQL for production instead of SQLite for better concurrency
-4. Set up Redis for Sidekiq background jobs
+4. Set up Redis for rack-attack and any future background jobs
+
+### CI & Tooling
+
+This project includes a CI runner (`bin/ci`) which uses:
+
+- `brakeman` for static security analysis
+- `bundler-audit` for vulnerable dependency scanning
+- `rubocop-rails-omakase` for style checks
+- `thruster` (via `bin/thrust`) as the orchestration layer for the CI pipeline
 
 ## License
 

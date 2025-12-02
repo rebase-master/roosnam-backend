@@ -6,6 +6,7 @@ class WorkExperience < ApplicationRecord
   # doesn't exist in client_projects table, so commenting out to avoid errors
   # has_many :client_projects, dependent: :destroy
 
+  validates :employer_name, presence: true
   validates :job_title, presence: true
   validates :start_date, presence: true
 

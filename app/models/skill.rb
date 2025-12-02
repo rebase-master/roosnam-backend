@@ -1,5 +1,7 @@
 class Skill < ApplicationRecord
   belongs_to :work_experience, optional: true
+  has_many :project_skills, dependent: :destroy
+  has_many :client_projects, through: :project_skills
 
   validates :name, presence: true
   validates :years_of_experience,

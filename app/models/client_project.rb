@@ -1,7 +1,8 @@
 class ClientProject < ApplicationRecord
   belongs_to :user
   has_many :client_reviews, dependent: :destroy
-  has_and_belongs_to_many :skills
+  has_many :project_skills, dependent: :destroy
+  has_many :skills, through: :project_skills
   has_many_attached :project_images
 
   validates :name, presence: true
