@@ -185,4 +185,56 @@ class SkillTest < ActiveSupport::TestCase
     # Should append -1 since existing has slug "test-skill"
     assert_equal "test-skill-1", new_skill.slug
   end
+
+  # Scope Tests
+  test "for_portfolio_user scope should return skills from user's work experiences" do
+    user = users(:portfolio_user)
+    work_exp = work_experiences(:current_job)
+    skill = skills(:ruby)
+    skill.update(work_experience: work_exp)
+
+    skills = Skill.for_portfolio_user(user.id)
+    assert_includes skills.map(&:id), skill.id
+  end
+
+  test "for_portfolio_user scope should return skills from user's client projects" do
+    user = users(:portfolio_user)
+    project = client_projects(:ecommerce_project)
+    skill = skills(:ruby)
+    ProjectSkill.create!(client_project: project, skill: skill)
+
+    skills = Skill.for_portfolio_user(user.id)
+    assert_includes skills.map(&:id), skill.id
+  end
+
+  test "for_portfolio_user scope should return distinct skills" do
+    user = users(:portfolio_user)
+    work_exp = work_experiences(:current_job)
+    project = client_projects(:ecommerce_project)
+    skill = skills(:ruby)
+    
+    skill.update(work_experience: work_exp)
+    ProjectSkill.create!(client_project: project, skill: skill)
+
+    skills = Skill.for_portfolio_user(user.id)
+    skill_ids = skills.map(&:id)
+    assert_equal 1, skill_ids.count(skill.id), "Skill should appear only once"
+  end
+
+  test "for_portfolio_user scope should order by years_of_experience desc then name" do
+    user = users(:portfolio_user)
+    work_exp = work_experiences(:current_job)
+    skill1 = skills(:ruby)
+    skill2 = skills(:javascript)
+    
+    skill1.update(years_of_experience: 5, work_experience: work_exp)
+    skill2.update(years_of_experience: 10, work_experience: work_exp)
+
+    skills = Skill.for_portfolio_user(user.id)
+    skill_ids = skills.map(&:id)
+    skill2_index = skill_ids.index(skill2.id)
+    skill1_index = skill_ids.index(skill1.id)
+    
+    assert skill2_index < skill1_index, "Skill with more experience should come first"
+  end
 end
