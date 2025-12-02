@@ -59,4 +59,21 @@ class CertificationTest < ActiveSupport::TestCase
     @certification.expiration_date = Date.today + 1.year
     assert @certification.valid?
   end
+
+  # Edge Cases
+  test "set_default_user should not override existing user" do
+    cert = Certification.new(title: "Test", issuer: "Test", user: @user)
+    cert.valid?
+    assert_equal @user, cert.user
+  end
+
+  test "set_default_user should set user when nil" do
+    cert = Certification.new(title: "Test", issuer: "Test", user: nil)
+    cert.valid?
+    assert_equal User.first, cert.user
+  end
+
+  test "should have one attached document" do
+    assert_respond_to @certification, :document
+  end
 end
