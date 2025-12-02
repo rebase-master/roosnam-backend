@@ -1,7 +1,18 @@
 puts "🌱 Seeding generic portfolio data..."
 
-admin_email = ENV.fetch("ADMIN_EMAIL", "admin@example.com")
-admin_password = ENV.fetch("ADMIN_PASSWORD", "changeme123")
+# In production we require explicit, strong admin credentials.
+if Rails.env.production?
+  admin_email = ENV.fetch('ADMIN_EMAIL') { raise 'ADMIN_EMAIL environment variable is required in production' }
+  admin_password = ENV.fetch('ADMIN_PASSWORD') { raise 'ADMIN_PASSWORD environment variable is required in production' }
+
+  if admin_password.length < 12
+    raise 'ADMIN_PASSWORD must be at least 12 characters long in production'
+  end
+else
+  # In non-production we fall back to convenient but clearly unsafe defaults.
+  admin_email = ENV.fetch('ADMIN_EMAIL', 'admin@example.com')
+  admin_password = ENV.fetch('ADMIN_PASSWORD', 'changeme123')
+end
 
 ActiveRecord::Base.transaction do
   # Create minimal admin user (required for authentication)

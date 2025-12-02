@@ -19,10 +19,14 @@ class Rack::Attack
     end
   end
 
-  # Block suspicious requests
-  blocklist('block bad user agents') do |req|
-    bad_agents = ['curl', 'wget', 'python-requests']
-    bad_agents.any? { |agent| req.user_agent&.downcase&.include?(agent) }
+  # Block obviously malicious or abusive user agents, but avoid blocking common
+  # developer tooling like curl or language HTTP clients, which are often used
+  # legitimately for health checks and debugging.
+  blocklist('block known bad user agents') do |req|
+    next false if req.user_agent.blank?
+
+    bad_agents = ['sqlmap', 'nikto', 'acunetix', 'nmap']
+    bad_agents.any? { |agent| req.user_agent.downcase.include?(agent) }
   end unless Rails.env.development?
 
   # Custom throttle response
