@@ -85,4 +85,104 @@ class SkillTest < ActiveSupport::TestCase
     @skill.save
     assert_equal original_slug, @skill.slug
   end
+
+  # Association Tests
+  test "should belong to work_experience optionally" do
+    assert_respond_to @skill, :work_experience
+  end
+
+  test "should have many project_skills" do
+    assert_respond_to @skill, :project_skills
+  end
+
+  test "should have many client_projects through project_skills" do
+    assert_respond_to @skill, :client_projects
+  end
+
+  test "should be associated with client projects via project_skills" do
+    project = client_projects(:ecommerce_project)
+    ProjectSkill.create!(client_project: project, skill: @skill)
+    assert_includes @skill.client_projects, project
+  end
+
+  test "should destroy project_skills when skill is destroyed" do
+    project = client_projects(:ecommerce_project)
+    project_skill = ProjectSkill.create!(client_project: project, skill: @skill)
+    @skill.destroy
+    assert_not ProjectSkill.exists?(id: project_skill.id)
+  end
+
+  # Slug Generation Edge Cases
+  test "should handle special characters in name for slug" do
+    skill = Skill.create(name: "C++ & Python")
+    # parameterize removes special chars, so & becomes empty
+    assert_equal "c-python", skill.slug
+  end
+
+  test "should handle unicode characters in name" do
+    skill = Skill.create(name: "Résumé Skills")
+    assert skill.slug.present?
+    assert_equal skill.slug, skill.slug.parameterize
+  end
+
+  test "should handle very long names" do
+    long_name = "A" * 100
+    skill = Skill.create(name: long_name)
+    assert skill.slug.present?
+    assert skill.slug.length <= 100
+  end
+
+  test "should not regenerate slug if name unchanged but other attributes change" do
+    original_slug = @skill.slug
+    @skill.proficiency_level = 'advanced'
+    @skill.save
+    assert_equal original_slug, @skill.slug
+  end
+
+  test "should regenerate slug when name changes" do
+    original_slug = @skill.slug
+    @skill.name = "New Skill Name"
+    @skill.save
+    assert_not_equal original_slug, @skill.slug
+    assert_equal "new-skill-name", @skill.slug
+  end
+
+  test "should generate slug on create even if slug is blank" do
+    skill = Skill.new(name: "Test Skill", slug: "")
+    skill.valid?
+    assert_equal "test-skill", skill.slug
+  end
+
+  test "should handle slug generation with existing slug" do
+    skill1 = Skill.create!(name: "Test")
+    skill2 = Skill.new(name: "Test")
+    skill2.valid?
+    assert_equal "test-1", skill2.slug
+  end
+
+  test "generate_slug should handle multiple duplicates correctly" do
+    Skill.create!(name: "Popular")
+    Skill.create!(name: "Popular")
+    skill3 = Skill.new(name: "Popular")
+    skill3.valid?
+    assert_equal "popular-2", skill3.slug
+  end
+
+  test "generate_slug should handle while loop for uniqueness" do
+    # Create multiple skills with same name to test the while loop
+    Skill.create!(name: "Test")
+    Skill.create!(name: "Test")
+    Skill.create!(name: "Test")
+    skill4 = Skill.new(name: "Test")
+    skill4.valid?
+    assert_equal "test-3", skill4.slug
+  end
+
+  test "generate_slug should handle existing skill with same slug" do
+    existing = Skill.create!(name: "Test Skill", slug: "test-skill")
+    new_skill = Skill.new(name: "Test Skill")
+    new_skill.valid?
+    # Should append -1 since existing has slug "test-skill"
+    assert_equal "test-skill-1", new_skill.slug
+  end
 end

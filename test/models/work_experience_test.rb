@@ -23,6 +23,12 @@ class WorkExperienceTest < ActiveSupport::TestCase
     assert_includes @work_experience.errors[:start_date], "can't be blank"
   end
 
+  test "should require employer_name" do
+    @work_experience.employer_name = nil
+    assert_not @work_experience.valid?
+    assert_includes @work_experience.errors[:employer_name], "can't be blank"
+  end
+
   test "should allow nil end_date for current positions" do
     @work_experience.end_date = nil
     assert @work_experience.valid?
@@ -86,5 +92,70 @@ class WorkExperienceTest < ActiveSupport::TestCase
     @work_experience.start_date = Date.new(2020, 5, 1)
     @work_experience.end_date = Date.new(2020, 5, 31)
     assert_equal 0, @work_experience.duration_in_months
+  end
+
+  test "duration_in_months should handle cross-year periods" do
+    @work_experience.start_date = Date.new(2020, 11, 1)
+    @work_experience.end_date = Date.new(2021, 2, 1)
+    assert_equal 3, @work_experience.duration_in_months
+  end
+
+  test "custom_label should handle nil job_title gracefully" do
+    @work_experience.job_title = nil
+    @work_experience.employer_name = "Test Company"
+    # Should not raise error
+    label = @work_experience.custom_label
+    assert label.is_a?(String)
+  end
+
+  # Dependent Nullify Tests
+  test "should nullify skills when work experience is destroyed" do
+    skill = skills(:ruby)
+    skill.update(work_experience: @work_experience)
+    @work_experience.destroy
+    skill.reload
+    assert_nil skill.work_experience_id
+  end
+
+  # Edge Cases
+  test "set_default_user should not override existing user" do
+    work_exp = WorkExperience.new(
+      job_title: "Test",
+      employer_name: "Company",
+      start_date: Date.today,
+      user: @user
+    )
+    work_exp.valid?
+    assert_equal @user, work_exp.user
+  end
+
+  test "set_default_user should set user when nil" do
+    work_exp = WorkExperience.new(
+      job_title: "Test",
+      employer_name: "Company",
+      start_date: Date.today,
+      user: nil
+    )
+    work_exp.valid?
+    assert_equal User.first, work_exp.user
+  end
+
+  test "custom_label should handle nil job_title" do
+    @work_experience.job_title = nil
+    label = @work_experience.custom_label
+    assert label.is_a?(String)
+    assert label.include?(@work_experience.employer_name || 'Unknown Company')
+  end
+
+  test "duration_in_months should handle leap year correctly" do
+    @work_experience.start_date = Date.new(2020, 2, 1)
+    @work_experience.end_date = Date.new(2021, 2, 1)
+    assert_equal 12, @work_experience.duration_in_months
+  end
+
+  test "duration_in_months should handle year boundary correctly" do
+    @work_experience.start_date = Date.new(2020, 12, 1)
+    @work_experience.end_date = Date.new(2021, 1, 1)
+    assert_equal 1, @work_experience.duration_in_months
   end
 end
