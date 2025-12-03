@@ -2,6 +2,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :recoverable, :rememberable, :validatable
   include SocialLinksAttributes
 
+  attr_accessor :remove_resume
+
   has_many :work_experiences, dependent: :destroy
   has_many :education, class_name: 'Education', dependent: :destroy
   has_many :certifications, dependent: :destroy
@@ -25,9 +27,17 @@ class User < ApplicationRecord
             inclusion: { in: %w[available open_to_opportunities not_available] },
             allow_nil: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :resume,
+            content_type: {
+              in: ['application/pdf', 'application/msword'],
+              message: 'must be a PDF or DOC file'
+            },
+            allow_nil: true
 
+  before_save :purge_resume_if_requested
   before_save :calculate_profile_completeness
   after_initialize :set_default_json_fields
+  after_commit :ensure_resume_filename, if: -> { resume.attached? }
 
   # Current role/company from work_experiences table
   def current_experience
@@ -67,6 +77,55 @@ class User < ApplicationRecord
   end
 
   private
+
+  def purge_resume_if_requested
+    return unless ActiveModel::Type::Boolean.new.cast(remove_resume)
+    resume.purge if resume.attached?
+  end
+
+  def ensure_resume_filename
+    return unless resume.attached?
+
+    desired = generated_resume_filename
+    current = resume.filename.to_s
+    return if desired.blank? || desired == current
+
+    # Update the blob's filename; this does not change the key/path
+    resume.blob.update(filename: desired)
+  end
+
+  def generated_resume_filename
+    date_str = Date.current.strftime('%d%m%Y')
+
+    first_name, last_name = extract_first_and_last_name
+    name_parts = []
+    name_parts << first_name if first_name.present?
+    name_parts << last_name if last_name.present?
+
+    base =
+      if name_parts.empty?
+        date_str
+      else
+        "#{name_parts.join('_')}_#{date_str}"
+      end
+
+    # Sanitize: keep letters, numbers and underscores, collapse others to underscores
+    sanitized_base = base.strip.gsub(/[^A-Za-z0-9]+/, '_').gsub(/^_+|_+$/, '').downcase
+
+    ext = File.extname(resume.filename.to_s)
+    ext = '.pdf' if ext.blank?
+
+    "#{sanitized_base}#{ext}"
+  end
+
+  def extract_first_and_last_name
+    return [nil, nil] if full_name.blank?
+
+    parts = full_name.strip.split(/\s+/)
+    first = parts.first
+    last = parts[1..]&.join(' ')
+    [first, last.presence]
+  end
 
   def enforce_singleton
     errors.add(:base, "Only one user is allowed in this application") if User.exists?

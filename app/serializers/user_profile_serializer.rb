@@ -23,16 +23,17 @@ class UserProfileSerializer < ActiveModel::Serializer
 
     Rails.application.routes.url_helpers.rails_blob_url(
       object.profile_photo,
-      only_path: true
+      host: ENV.fetch('RAILS_HOST', 'localhost'),
+      port: ENV.fetch('RAILS_PORT', 3000).to_i
     )
   end
 
   def resume_url
     return nil unless object.resume.attached?
 
-    Rails.application.routes.url_helpers.rails_blob_url(
-      object.resume,
-      only_path: true
+    Rails.application.routes.url_helpers.api_v1_resume_url(
+      host: ENV.fetch('RAILS_HOST', 'localhost'),
+      port: ENV.fetch('RAILS_PORT', 3000).to_i
     )
   end
 end

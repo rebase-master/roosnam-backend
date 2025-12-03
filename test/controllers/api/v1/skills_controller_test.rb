@@ -35,7 +35,7 @@ class Api::V1::SkillsControllerTest < ActionDispatch::IntegrationTest
 
     json_response = JSON.parse(response.body)
     assert json_response.is_a?(Array)
-    
+
     # Verify skills come from either work experiences or client projects
     skill_ids = json_response.map { |s| s['id'] }
     assert_includes skill_ids, skill.id

@@ -162,8 +162,33 @@ RailsAdmin.config do |config|
 
       group :resume_upload do
         label 'Resume / CV'
-        field :resume do
-          help 'Upload your resume/CV (PDF, DOC, DOCX)'
+        field :resume, :active_storage do
+          help 'Upload your resume/CV (PDF or DOC only). The file will be renamed automatically for public download.'
+
+          pretty_value do
+            if bindings[:object].resume.attached?
+              bindings[:view].link_to(
+                bindings[:object].resume.filename.to_s,
+                Rails.application.routes.url_helpers.rails_blob_path(
+                  bindings[:object].resume,
+                  disposition: :attachment,
+                  only_path: true
+                ),
+                target: '_blank',
+                rel: 'noopener'
+              )
+            else
+              'No resume uploaded'
+            end
+          end
+        end
+
+        field :remove_resume, :boolean do
+          label 'Remove existing resume'
+          help 'Check and save to delete the currently uploaded resume.'
+          visible do
+            bindings[:object].resume.attached?
+          end
         end
       end
 
