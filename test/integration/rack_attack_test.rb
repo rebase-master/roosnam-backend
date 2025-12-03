@@ -35,10 +35,14 @@ class RackAttackTest < ActionDispatch::IntegrationTest
   end
 
   test "should return correct headers for throttled requests" do
-    # Make requests until throttled
-    101.times { get api_v1_profile_url, as: :json }
+    # Make 100 requests that should succeed
+    100.times do
+      get api_v1_profile_url, as: :json
+      assert_response :success
+    end
 
-    # Check the throttled response
+    # The 101st request should be throttled
+    get api_v1_profile_url, as: :json
     assert_response :too_many_requests
     assert_equal 'application/json', response.content_type
 
