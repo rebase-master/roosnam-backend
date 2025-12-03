@@ -79,8 +79,13 @@ class User < ApplicationRecord
   private
 
   def purge_resume_if_requested
+    return if remove_resume.blank?
     return unless ActiveModel::Type::Boolean.new.cast(remove_resume)
-    resume.purge if resume.attached?
+    
+    if resume.attached?
+      resume.purge
+      self.remove_resume = false # Reset after purge
+    end
   end
 
   def ensure_resume_filename

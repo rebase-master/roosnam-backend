@@ -182,14 +182,6 @@ RailsAdmin.config do |config|
             end
           end
         end
-
-        field :remove_resume, :boolean do
-          label 'Remove existing resume'
-          help 'Check and save to delete the currently uploaded resume.'
-          visible do
-            bindings[:object].resume.attached?
-          end
-        end
       end
 
       group :work_details do
