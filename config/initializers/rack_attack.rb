@@ -14,8 +14,29 @@ class Rack::Attack
   # Throttle login attempts by email
   throttle('logins/email', limit: 5, period: 20.seconds) do |req|
     if req.path == '/users/sign_in' && req.post?
+      # In Rails integration tests, params are already parsed
+      # In production, we may need to parse the body
+      email = req.params.dig('user', 'email')
+      
+      # If not in params, try parsing the body
+      if email.blank? && req.body
+        begin
+          req.body.rewind if req.body.respond_to?(:rewind)
+          body = req.body.read
+          req.body.rewind if req.body.respond_to?(:rewind)
+          
+          if body.present?
+            parsed = Rack::Utils.parse_nested_query(body)
+            email = parsed.dig('user', 'email')
+          end
+        rescue
+          # If parsing fails, skip throttling for this request
+          next nil
+        end
+      end
+      
       # Normalize email to prevent case-based bypass
-      req.params.dig('user', 'email')&.downcase&.strip
+      email&.downcase&.strip
     end
   end
 
