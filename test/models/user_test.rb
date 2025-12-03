@@ -496,4 +496,45 @@ class UserTest < ActiveSupport::TestCase
     company = @user.current_company_name
     assert_nil company
   end
+
+  # Resume attachment tests
+  test "resume must be pdf or doc content type" do
+    @user.resume.attach(
+      io: StringIO.new("not a pdf"),
+      filename: "resume.txt",
+      content_type: "text/plain"
+    )
+
+    assert_not @user.valid?
+    assert_includes @user.errors[:resume], "must be a PDF or DOC file"
+  end
+
+  test "ensure_resume_filename sets filename based on full_name and date" do
+    @user.full_name = "John Doe"
+    @user.resume.attach(
+      io: StringIO.new("dummy resume"),
+      filename: "my_resume.pdf",
+      content_type: "application/pdf"
+    )
+    @user.save!
+    @user.reload
+
+    filename = @user.resume.filename.to_s
+    assert_match(/john_doe_\d{8}\.pdf/, filename)
+  end
+
+  test "remove_resume flag should purge attached resume before save" do
+    @user.resume.attach(
+      io: StringIO.new("dummy resume"),
+      filename: "resume.pdf",
+      content_type: "application/pdf"
+    )
+    assert @user.resume.attached?
+
+    @user.remove_resume = true
+    @user.save!
+    @user.reload
+
+    assert_not @user.resume.attached?
+  end
 end

@@ -3,6 +3,8 @@ require "test_helper"
 class AdminUiHelperTest < ActionView::TestCase
   include AdminUiHelper
 
+  require "ostruct"
+
   test "admin_model_icon should return icon for known models" do
     assert_equal 'fa-user-circle', admin_model_icon('User')
     assert_equal 'fa-briefcase', admin_model_icon('WorkExperience')
@@ -72,6 +74,49 @@ class AdminUiHelperTest < ActionView::TestCase
     assert status_badge('Test', :accent).include?('badge-accent')
     assert status_badge('Test', :muted).include?('badge-muted')
     assert status_badge('Test', :unknown).include?('badge-muted')
+  end
+
+  test "admin_static_links should map navigation_static_links into array of hashes" do
+    RailsAdmin::Config.stub(:navigation_static_links, {
+      'Portfolio Owner' => '/admin/user/1/edit',
+      'Docs' => 'https://example.com/docs'
+    }) do
+
+      links = admin_static_links
+      assert_equal 2, links.size
+      assert_includes links, { label: 'Portfolio Owner', url: '/admin/user/1/edit' }
+      assert_includes links, { label: 'Docs', url: 'https://example.com/docs' }
+    end
+  end
+
+  test "admin_nav_sections should group known models under Portfolio and others under Other" do
+    user_model = OpenStruct.new(model_name: 'User', to_param: 'user')
+    other_model = OpenStruct.new(model_name: 'AuditLog', to_param: 'audit_log')
+
+    user_config = OpenStruct.new(
+      abstract_model: user_model,
+      label_plural: 'Users'
+    )
+    other_config = OpenStruct.new(
+      abstract_model: other_model,
+      label_plural: 'Audit Logs'
+    )
+
+    RailsAdmin::Config.stub(:visible_models, [user_config, other_config]) do
+      # Simplify nav_item_hash behaviour to avoid depending on RailsAdmin internals
+      def nav_item_hash(config)
+        { label: config.label_plural, path: "/admin/#{config.abstract_model.to_param}", icon: 'fa-folder-tree', active: false }
+      end
+
+      sections = admin_nav_sections
+      assert_equal 2, sections.size
+
+      portfolio_section = sections.find { |s| s[:label] == 'Portfolio' }
+      other_section = sections.find { |s| s[:label] == 'Other' }
+
+      assert_equal ['Users'], portfolio_section[:items].map { |i| i[:label] }
+      assert_equal ['Audit Logs'], other_section[:items].map { |i| i[:label] }
+    end
   end
 end
 
